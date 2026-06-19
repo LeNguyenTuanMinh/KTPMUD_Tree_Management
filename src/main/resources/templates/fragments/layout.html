@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- ============================================
+     Fragment: head(title)
+     Usage: <head th:replace="~{fragments/layout :: head('Page Title')}">
+     ============================================ -->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf?.token}" />
+    <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
+    <title th:text="${title}">Bee Pollen Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YcnS/1p2GGMjR0y4p3k2Fg3nnUG2G2nUE0v" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+
+<!-- ============================================
+     Fragment: sidebar
+     Usage: <div th:replace="~{fragments/layout :: sidebar}">
+     Requires variable 'activeMenu' set via th:with on body/main
+     ============================================ -->
+<div th:fragment="sidebar">
+    <!-- Mobile Toggle Button -->
+    <button class="sidebar-toggle" type="button" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <!-- Brand -->
+        <div class="sidebar-header">
+            <span class="brand-icon">🐝</span>
+            <span class="brand-text">Bee Pollen</span>
+        </div>
+
+        <!-- Navigation -->
+        <div class="sidebar-nav">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeMenu == 'dashboard'} ? 'active'"
+                       th:href="@{/dashboard}">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeMenu == 'plants'} ? 'active'"
+                       th:href="@{/plants}">
+                        <i class="bi bi-flower1"></i>
+                        <span>Plants</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeMenu == 'pollens'} ? 'active'"
+                       th:href="@{/pollens}">
+                        <i class="bi bi-circle-fill"></i>
+                        <span>Pollens</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeMenu == 'colonies'} ? 'active'"
+                       th:href="@{/colonies}">
+                        <i class="bi bi-hexagon-fill"></i>
+                        <span>Bee Colonies</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeMenu == 'collections'} ? 'active'"
+                       th:href="@{/collections}">
+                        <i class="bi bi-clipboard-data"></i>
+                        <span>Collection Tracking</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeMenu == 'ai-assistant'} ? 'active'"
+                       th:href="@{/ai-assistant}">
+                        <i class="bi bi-robot"></i>
+                        <span>AI Assistant</span>
+                    </a>
+                </li>
+
+                <!-- Divider -->
+                <li>
+                    <div class="nav-divider"></div>
+                </li>
+
+                <!-- Admin Only: Users Management -->
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:classappend="${activeMenu == 'users'} ? 'active'"
+                       th:href="@{/users}">
+                        <i class="bi bi-people"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Footer: User Info & Logout -->
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <i class="bi bi-person-circle"></i>
+                <div>
+                    <div class="user-name" sec:authentication="name">User</div>
+                    <small class="text-muted" sec:authentication="principal.authorities">[ROLE]</small>
+                </div>
+            </div>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-logout">
+                    <i class="bi bi-box-arrow-left me-1"></i> Sign Out
+                </button>
+            </form>
+        </div>
+    </nav>
+</div>
+
+<!-- ============================================
+     Fragment: scripts
+     Usage: <div th:replace="~{fragments/layout :: scripts}">
+     ============================================ -->
+<div th:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <script>
+        // Sidebar toggle for mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+            document.getElementById('sidebarOverlay').classList.toggle('show');
+        }
+
+        // Auto-dismiss alerts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function () {
+            const alerts = document.querySelectorAll('.alert-dismissible');
+            alerts.forEach(function (alert) {
+                setTimeout(function () {
+                    const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                    bsAlert.close();
+                }, 5000);
+            });
+        });
+    </script>
+</div>
+
+<!-- ============================================
+     Fragment: page-header(title, subtitle)
+     Usage: <div th:replace="~{fragments/layout :: page-header('Plants', 'Manage plant records')}">
+     ============================================ -->
+<div th:fragment="page-header(title, subtitle)">
+    <div class="page-header">
+        <div>
+            <h2 th:text="${title}">Page Title</h2>
+            <p class="page-subtitle mb-0" th:if="${subtitle != null and !subtitle.isEmpty()}"
+               th:text="${subtitle}">Page subtitle</p>
+        </div>
+        <!-- Slot for action buttons: use th:block with th:ref or add buttons after replacing this fragment -->
+    </div>
+</div>
+
+<!-- ============================================
+     Fragment: delete-modal
+     Usage: <div th:replace="~{fragments/layout :: delete-modal}">
+     Trigger with: data-bs-toggle="modal" data-bs-target="#deleteModal"
+     Set URL:      data-delete-url="/plants/5/delete"
+     Set Name:     data-delete-name="Rose Plant"
+     ============================================ -->
+<div th:fragment="delete-modal">
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-confirm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <h5>Are you sure?</h5>
+                    <p class="text-muted">You are about to delete <strong id="deleteItemName">this item</strong>.
+                        This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-1"></i> Cancel
+                    </button>
+                    <form id="deleteForm" method="post">
+                        <input type="hidden" name="_csrf" th:value="${_csrf?.token}" />
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-1"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteModal = document.getElementById('deleteModal');
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function (event) {
+                    const trigger = event.relatedTarget;
+                    const deleteUrl = trigger.getAttribute('data-delete-url');
+                    const deleteName = trigger.getAttribute('data-delete-name') || 'this item';
+                    document.getElementById('deleteForm').setAttribute('action', deleteUrl);
+                    document.getElementById('deleteItemName').textContent = deleteName;
+                });
+            }
+        });
+    </script>
+</div>
+
+</html>

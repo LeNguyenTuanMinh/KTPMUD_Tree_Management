@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="${colony.colonyCode} + ' - Detail'">Colony Detail</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-hexagon-fill text-primary me-2"></i> Colony Details</h2>
+            <p class="text-muted mb-0">View bee colony information</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/colonies}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Back</a>
+            <a th:href="@{/colonies/{id}/edit(id=${colony.id})}" class="btn btn-outline-warning"
+               sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')"><i class="bi bi-pencil me-1"></i> Edit</a>
+            <button type="button" class="btn btn-outline-danger"
+                    sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')"
+                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                    th:data-delete-url="@{/colonies/{id}/delete(id=${colony.id})}"
+                    th:data-delete-name="${colony.colonyCode}">
+                <i class="bi bi-trash me-1"></i> Delete
+            </button>
+        </div>
+    </div>
+
+    <!-- Detail Card -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h5 class="text-dark fw-bold border-bottom pb-2 mb-3"><i class="bi bi-info-circle text-primary me-2"></i> Colony Information</h5>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-2">Colony Code</dt>
+                        <dd class="col-sm-7 fw-semibold fs-6 mb-2" th:text="${colony.colonyCode}">—</dd>
+                        
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-2">Bee Species</dt>
+                        <dd class="col-sm-7 fs-6 mb-2" th:text="${colony.beeSpecies}">—</dd>
+                        
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-2">Health Status</dt>
+                        <dd class="col-sm-7 mb-2">
+                            <span class="badge"
+                                  th:classappend="${colony.healthStatus == 'HEALTHY'} ? 'bg-success' :
+                                                  (${colony.healthStatus == 'WEAK'} ? 'bg-warning text-dark' :
+                                                  (${colony.healthStatus == 'CRITICAL'} ? 'bg-danger' : 'bg-dark'))"
+                                  th:text="${colony.healthStatus}">HEALTHY</span>
+                        </dd>
+                        
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-0">Est. Population</dt>
+                        <dd class="col-sm-7 mb-0" th:text="${colony.estimatedPopulation != null} ? ${#numbers.formatInteger(colony.estimatedPopulation, 1, 'COMMA')} : 'N/A'">—</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="text-dark fw-bold border-bottom pb-2 mb-3"><i class="bi bi-geo-alt text-success me-2"></i> Location & Metadata</h5>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-2">Latitude</dt>
+                        <dd class="col-sm-7 mb-2" th:text="${colony.latitude != null} ? ${#numbers.formatDecimal(colony.latitude, 1, 6)} : 'N/A'">—</dd>
+                        
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-2">Longitude</dt>
+                        <dd class="col-sm-7 mb-2" th:text="${colony.longitude != null} ? ${#numbers.formatDecimal(colony.longitude, 1, 6)} : 'N/A'">—</dd>
+                        
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-2">Created At</dt>
+                        <dd class="col-sm-7 mb-2" th:text="${colony.createdAt != null} ? ${#temporals.format(colony.createdAt, 'yyyy-MM-dd HH:mm')} : '—'">—</dd>
+                        
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-0">Updated At</dt>
+                        <dd class="col-sm-7 mb-0" th:text="${colony.updatedAt != null} ? ${#temporals.format(colony.updatedAt, 'yyyy-MM-dd HH:mm')} : '—'">—</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script-extras">
+    <!-- Delete Confirmation Modal -->
+    <div th:replace="~{fragments/components :: confirm-delete}"></div>
+</th:block>
+
+</body>
+</html>

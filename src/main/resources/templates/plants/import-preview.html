@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Preview Imported Plant Data</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-file-earmark-pdf text-danger me-2"></i> Preview Plant Import</h2>
+        <a th:href="@{/plants}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Cancel
+        </a>
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        Dữ liệu được trích xuất từ PDF. Vui lòng kiểm tra trước khi lưu.
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/plants}" th:object="${plant}" method="post">
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="commonName" class="form-label">Common Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="commonName" th:field="*{commonName}" required>
+                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('commonName')}" th:errors="*{commonName}">Error</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="scientificName" class="form-label">Scientific Name</label>
+                        <input type="text" class="form-control" id="scientificName" th:field="*{scientificName}">
+                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('scientificName')}" th:errors="*{scientificName}">Error</div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" th:field="*{description}" rows="4"></textarea>
+                    <div class="text-danger mt-1" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</div>
+                </div>
+
+                <!-- Fields that Gemini didn't extract, user can fill them manually if they want -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="family" class="form-label">Family</label>
+                        <input type="text" class="form-control" id="family" th:field="*{family}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="genus" class="form-label">Genus</label>
+                        <input type="text" class="form-control" id="genus" th:field="*{genus}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="floweringSeason" class="form-label">Flowering Season</label>
+                        <input type="text" class="form-control" id="floweringSeason" th:field="*{floweringSeason}">
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="region" class="form-label">Region</label>
+                        <input type="text" class="form-control" id="region" th:field="*{region}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="imageUrl" class="form-label">Image URL</label>
+                        <input type="url" class="form-control" id="imageUrl" th:field="*{imageUrl}">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Associated Pollens</label>
+                    <div class="card p-3 bg-light">
+                        <div class="row">
+                            <div class="col-md-4 mb-2" th:each="pollenOpt : ${allPollens}">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                           th:field="*{pollenIds}" 
+                                           th:value="${pollenOpt.id}"
+                                           th:id="${'pollen_' + pollenOpt.id}">
+                                    <label class="form-check-label" th:for="${'pollen_' + pollenOpt.id}">
+                                        <span class="color-swatch-sm d-inline-block rounded-circle" 
+                                              style="background-color: #ffcc00; width:12px; height:12px; margin-right:5px; border:1px solid #ccc;"></span>
+                                        <span th:text="${pollenOpt.name}">Pollen Name</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-12 text-muted" th:if="${allPollens == null or allPollens.empty}">
+                                <em>No pollens available. Create pollens first.</em>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+                
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i> Save Plant
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="${plantId != null ? 'Edit Plant' : 'Add Plant'}">Plant Form</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>
+                <i class="bi bi-flower1 text-honey me-2"></i>
+                <span th:text="${plantId != null ? 'Edit Plant' : 'Add Plant'}">Add Plant</span>
+            </h2>
+            <p class="text-muted mb-0"
+               th:text="${plantId != null ? 'Update plant information' : 'Add a new plant to the system'}">
+                Manage plant data
+            </p>
+        </div>
+        <div>
+            <a th:href="@{/plants}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to Plants
+            </a>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+
+                    <!-- Plant Form -->
+                    <form th:object="${plant}"
+                          th:action="${plantId != null ? '/plants/' + plantId + '/edit' : '/plants'}"
+                          method="post">
+
+                        <div class="row">
+                            <!-- Common Name -->
+                            <div class="col-md-6 mb-3">
+                                <label for="commonName" class="form-label">
+                                    Common Name <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control"
+                                       th:classappend="${#fields.hasErrors('commonName')} ? 'is-invalid'"
+                                       id="commonName" th:field="*{commonName}"
+                                       placeholder="e.g., Sunflower" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('commonName')}"
+                                     th:errors="*{commonName}">
+                                    Common name is required
+                                </div>
+                            </div>
+
+                            <!-- Scientific Name -->
+                            <div class="col-md-6 mb-3">
+                                <label for="scientificName" class="form-label">
+                                    Scientific Name <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control"
+                                       th:classappend="${#fields.hasErrors('scientificName')} ? 'is-invalid'"
+                                       id="scientificName" th:field="*{scientificName}"
+                                       placeholder="e.g., Helianthus annuus" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('scientificName')}"
+                                     th:errors="*{scientificName}">
+                                    Scientific name is required
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Family -->
+                            <div class="col-md-6 mb-3">
+                                <label for="family" class="form-label">
+                                    Family <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control"
+                                       th:classappend="${#fields.hasErrors('family')} ? 'is-invalid'"
+                                       id="family" th:field="*{family}"
+                                       placeholder="e.g., Asteraceae" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('family')}"
+                                     th:errors="*{family}">
+                                    Family is required
+                                </div>
+                            </div>
+
+                            <!-- Genus -->
+                            <div class="col-md-6 mb-3">
+                                <label for="genus" class="form-label">Genus</label>
+                                <input type="text" class="form-control"
+                                       th:classappend="${#fields.hasErrors('genus')} ? 'is-invalid'"
+                                       id="genus" th:field="*{genus}"
+                                       placeholder="e.g., Helianthus">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('genus')}"
+                                     th:errors="*{genus}">
+                                    Invalid genus
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Flowering Season -->
+                            <div class="col-md-6 mb-3">
+                                <label for="floweringSeason" class="form-label">
+                                    Flowering Season <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select"
+                                        th:classappend="${#fields.hasErrors('floweringSeason')} ? 'is-invalid'"
+                                        id="floweringSeason" th:field="*{floweringSeason}" required>
+                                    <option value="">-- Select Season --</option>
+                                    <option value="Spring">Spring</option>
+                                    <option value="Summer">Summer</option>
+                                    <option value="Autumn">Autumn</option>
+                                    <option value="Winter">Winter</option>
+                                    <option value="Year-round">Year-round</option>
+                                </select>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('floweringSeason')}"
+                                     th:errors="*{floweringSeason}">
+                                    Flowering season is required
+                                </div>
+                            </div>
+
+                            <!-- Region -->
+                            <div class="col-md-6 mb-3">
+                                <label for="region" class="form-label">
+                                    Region <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control"
+                                       th:classappend="${#fields.hasErrors('region')} ? 'is-invalid'"
+                                       id="region" th:field="*{region}"
+                                       placeholder="e.g., Southeast Asia" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('region')}"
+                                     th:errors="*{region}">
+                                    Region is required
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control"
+                                      th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
+                                      id="description" th:field="*{description}" rows="4"
+                                      placeholder="Enter a detailed description of the plant..."></textarea>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}"
+                                 th:errors="*{description}">
+                                Invalid description
+                            </div>
+                        </div>
+
+                        <!-- Image URL -->
+                        <div class="mb-3">
+                            <label for="imageUrl" class="form-label">Image URL</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-image"></i></span>
+                                <input type="url" class="form-control"
+                                       th:classappend="${#fields.hasErrors('imageUrl')} ? 'is-invalid'"
+                                       id="imageUrl" th:field="*{imageUrl}"
+                                       placeholder="https://example.com/plant-image.jpg">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('imageUrl')}"
+                                     th:errors="*{imageUrl}">
+                                    Invalid URL format
+                                </div>
+                            </div>
+                            <div class="form-text">Provide a URL to an image of the plant (optional)</div>
+                        </div>
+
+                        <!-- Pollen Associations -->
+                        <div class="mb-4" th:if="${allPollens != null and !allPollens.isEmpty()}">
+                            <label class="form-label">Associated Pollens</label>
+                            <div class="card bg-light border-0">
+                                <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-4" th:each="pollen : ${allPollens}">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox"
+                                                       th:id="'pollen_' + ${pollen.id}"
+                                                       name="pollenIds"
+                                                       th:value="${pollen.id}"
+                                                       th:checked="${selectedPollenIds != null and selectedPollenIds.contains(pollen.id)}">
+                                                <label class="form-check-label"
+                                                       th:for="'pollen_' + ${pollen.id}"
+                                                       th:text="${pollen.name}">
+                                                    Pollen Name
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-text">Select the pollens associated with this plant</div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                            <a th:href="@{/plants}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-lg me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-honey">
+                                <i class="bi bi-check-lg me-1"></i>
+                                <span th:text="${plantId != null ? 'Update Plant' : 'Create Plant'}">Save</span>
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

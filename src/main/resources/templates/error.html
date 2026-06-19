@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Error - Bee Pollen Management</title>
+</head>
+<body th:with="activeMenu=''">
+
+<div layout:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-sm border-0 mt-5">
+                <div class="card-body text-center py-5 px-4">
+
+                    <!-- Error Icon -->
+                    <div class="mb-4">
+                        <!-- 404 Not Found -->
+                        <div th:if="${status == 404}">
+                            <i class="bi bi-search text-warning" style="font-size: 5rem;"></i>
+                        </div>
+                        <!-- 403 Forbidden -->
+                        <div th:if="${status == 403}">
+                            <i class="bi bi-shield-lock text-danger" style="font-size: 5rem;"></i>
+                        </div>
+                        <!-- 500 Internal Server Error -->
+                        <div th:if="${status == 500}">
+                            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 5rem;"></i>
+                        </div>
+                        <!-- Other errors -->
+                        <div th:if="${status != 404 and status != 403 and status != 500}">
+                            <i class="bi bi-emoji-frown text-warning" style="font-size: 5rem;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Error Status Code -->
+                    <h1 class="display-3 fw-bold text-dark mb-2" th:text="${status ?: 'Error'}">500</h1>
+
+                    <!-- Error Title -->
+                    <h3 class="mb-3 text-dark">
+                        <span th:if="${status == 404}">Page Not Found</span>
+                        <span th:if="${status == 403}">Access Denied</span>
+                        <span th:if="${status == 500}">Internal Server Error</span>
+                        <span th:if="${status != 404 and status != 403 and status != 500}">Something Went Wrong</span>
+                    </h3>
+
+                    <!-- Error Message -->
+                    <p class="text-muted mb-5 fs-5">
+                        <span th:if="${status == 404}">
+                            The page you are looking for might have been removed, had its name changed,
+                            or is temporarily unavailable.
+                        </span>
+                        <span th:if="${status == 403}">
+                            You don't have permission to access this resource.
+                            Please contact your administrator if you believe this is a mistake.
+                        </span>
+                        <span th:if="${status == 500}">
+                            An unexpected error occurred on the server. Our team has been notified.
+                            Please try again later.
+                        </span>
+                        <span th:if="${status != 404 and status != 403 and status != 500}"
+                              th:text="${message ?: 'An unexpected error occurred. Please try again.'}">
+                            An unexpected error occurred.
+                        </span>
+                    </p>
+
+                    <!-- Error Details (optional, for development) -->
+                    <div th:if="${error}" class="alert alert-light text-start mb-4 shadow-sm" role="alert">
+                        <small class="text-muted">
+                            <i class="bi bi-bug me-1"></i> <strong>Details:</strong>
+                            <span th:text="${error}">Error details</span>
+                        </small>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="javascript:history.back()" class="btn btn-outline-secondary px-4 py-2">
+                            <i class="bi bi-arrow-left me-1"></i> Go Back
+                        </a>
+                        <a th:href="@{/dashboard}" class="btn btn-primary px-4 py-2">
+                            <i class="bi bi-house me-1"></i> Dashboard
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

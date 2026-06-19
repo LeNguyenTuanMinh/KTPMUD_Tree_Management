@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Collection Details</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-clipboard-data text-purple me-2" style="color:#8B5CF6"></i> Collection Details</h2>
+            <p class="text-muted mb-0">View collection record details</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/collections}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Back</a>
+            <a th:href="@{/collections/{id}/edit(id=${tracking.id})}" class="btn btn-outline-warning"
+               sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')"><i class="bi bi-pencil me-1"></i> Edit</a>
+            <button type="button" class="btn btn-outline-danger"
+                    sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')"
+                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                    th:data-delete-url="@{/collections/{id}/delete(id=${tracking.id})}"
+                    th:data-delete-name="'Collection record'">
+                <i class="bi bi-trash me-1"></i> Delete
+            </button>
+        </div>
+    </div>
+
+    <!-- Detail Card -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <!-- Colony Info -->
+                <div class="col-md-6">
+                    <h5 class="text-dark fw-bold border-bottom pb-2 mb-3"><i class="bi bi-hexagon-fill text-primary me-2"></i> Colony Information</h5>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-2">Colony Code</dt>
+                        <dd class="col-sm-7 fw-semibold fs-6 mb-2" th:text="${tracking.colonyCode}">—</dd>
+                        
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-0">Bee Species</dt>
+                        <dd class="col-sm-7 mb-0" th:text="${tracking.beeSpecies}">—</dd>
+                    </dl>
+                </div>
+
+                <!-- Collection Info -->
+                <div class="col-md-6">
+                    <h5 class="text-dark fw-bold border-bottom pb-2 mb-3"><i class="bi bi-circle-fill text-warning me-2"></i> Collection Data</h5>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-2">Pollen Name</dt>
+                        <dd class="col-sm-7 fw-semibold fs-6 mb-2" th:text="${tracking.pollenName}">—</dd>
+                        
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-2">Weight</dt>
+                        <dd class="col-sm-7 fs-6 mb-2">
+                            <span class="badge bg-success bg-opacity-75 fs-6" th:text="${#numbers.formatDecimal(tracking.collectedWeight, 1, 2)}">0.00</span>
+                            <small class="text-muted">grams</small>
+                        </dd>
+                        
+                        <dt class="col-sm-5 text-muted small text-uppercase fw-bold mb-0">Collection Date</dt>
+                        <dd class="col-sm-7 mb-0" th:text="${tracking.collectionDate}">—</dd>
+                    </dl>
+                </div>
+
+                <!-- Note -->
+                <div class="col-12 mt-4" th:if="${tracking.note != null and !tracking.note.isEmpty()}">
+                    <h5 class="text-dark fw-bold border-bottom pb-2 mb-3"><i class="bi bi-journal-text text-secondary me-2"></i> Note</h5>
+                    <div class="p-3 bg-light rounded text-muted" th:text="${tracking.note}">—</div>
+                </div>
+            </div>
+            
+            <!-- Timestamps -->
+            <div class="col-12 mt-4 pt-3 border-top">
+                <small class="text-muted">
+                    <i class="bi bi-clock me-1"></i> Created: <span th:text="${tracking.createdAt != null} ? ${#temporals.format(tracking.createdAt, 'yyyy-MM-dd HH:mm')} : '—'">—</span>
+                    <span class="mx-2">|</span>
+                    <i class="bi bi-arrow-repeat me-1"></i> Updated: <span th:text="${tracking.updatedAt != null} ? ${#temporals.format(tracking.updatedAt, 'yyyy-MM-dd HH:mm')} : '—'">—</span>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script-extras">
+    <!-- Delete Confirmation Modal -->
+    <div th:replace="~{fragments/components :: confirm-delete}"></div>
+</th:block>
+
+</body>
+</html>

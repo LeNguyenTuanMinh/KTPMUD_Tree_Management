@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="${colonyId != null ? 'Edit Colony' : 'Add Colony'}">Colony Form</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>
+                <i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>
+                <span th:if="${colonyId == null}">Add New Colony</span>
+                <span th:if="${colonyId != null}">Edit Colony</span>
+            </h2>
+            <p class="text-muted mb-0">Manage bee colony details</p>
+        </div>
+        <div>
+            <a th:href="@{/colonies}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <form th:action="${colonyId != null} ? @{/colonies/{id}/edit(id=${colonyId})} : @{/colonies}"
+                          th:object="${colony}" method="post" novalidate>
+
+                        <div class="row g-3">
+                            <!-- Colony Code -->
+                            <div class="col-md-6 mb-3">
+                                <label for="colonyCode" class="form-label">Colony Code <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="colonyCode"
+                                       th:field="*{colonyCode}" th:classappend="${#fields.hasErrors('colonyCode')} ? 'is-invalid'"
+                                       placeholder="e.g. COL-001">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('colonyCode')}" th:errors="*{colonyCode}"></div>
+                            </div>
+
+                            <!-- Bee Species -->
+                            <div class="col-md-6 mb-3">
+                                <label for="beeSpecies" class="form-label">Bee Species <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="beeSpecies"
+                                       th:field="*{beeSpecies}" th:classappend="${#fields.hasErrors('beeSpecies')} ? 'is-invalid'"
+                                       placeholder="e.g. Apis mellifera">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('beeSpecies')}" th:errors="*{beeSpecies}"></div>
+                            </div>
+
+                            <!-- Health Status -->
+                            <div class="col-md-6 mb-3">
+                                <label for="healthStatus" class="form-label">Health Status</label>
+                                <select class="form-select" id="healthStatus" th:field="*{healthStatus}">
+                                    <option th:each="status : ${healthStatuses}"
+                                            th:value="${status.name()}" th:text="${status.name()}"
+                                            th:selected="${colony.healthStatus == status.name()}">HEALTHY</option>
+                                </select>
+                            </div>
+
+                            <!-- Estimated Population -->
+                            <div class="col-md-6 mb-3">
+                                <label for="estimatedPopulation" class="form-label">Estimated Population</label>
+                                <input type="number" class="form-control" id="estimatedPopulation"
+                                       th:field="*{estimatedPopulation}" min="0"
+                                       th:classappend="${#fields.hasErrors('estimatedPopulation')} ? 'is-invalid'"
+                                       placeholder="e.g. 50000">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('estimatedPopulation')}" th:errors="*{estimatedPopulation}"></div>
+                            </div>
+
+                            <!-- Latitude -->
+                            <div class="col-md-6 mb-3">
+                                <label for="latitude" class="form-label">Latitude</label>
+                                <input type="number" class="form-control" id="latitude"
+                                       th:field="*{latitude}" step="0.000001"
+                                       placeholder="e.g. 13.7563">
+                            </div>
+
+                            <!-- Longitude -->
+                            <div class="col-md-6 mb-3">
+                                <label for="longitude" class="form-label">Longitude</label>
+                                <input type="number" class="form-control" id="longitude"
+                                       th:field="*{longitude}" step="0.000001"
+                                       placeholder="e.g. 100.5018">
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                            <a th:href="@{/colonies}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-lg me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-honey">
+                                <i class="bi bi-check-lg me-1"></i>
+                                <span th:if="${colonyId == null}">Create Colony</span>
+                                <span th:if="${colonyId != null}">Update Colony</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

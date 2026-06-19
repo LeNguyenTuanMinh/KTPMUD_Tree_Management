@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Harvest Batch Report</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-bar-chart-line text-primary me-2"></i> Harvest Batch Report</h2>
+            <p class="text-muted mb-0">Aggregate pollen collection tracking data</p>
+        </div>
+        <div>
+            <a th:href="@{/collections/report/export/csv(fromDate=${fromDate},toDate=${toDate})}" class="btn btn-outline-success">
+                <i class="bi bi-download"></i> Export CSV
+            </a>
+            <a th:href="@{/collections}" class="btn btn-outline-secondary ms-2">
+                <i class="bi bi-arrow-left"></i> Back to Collections
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card shadow-sm border-0 mb-4 bg-light">
+        <div class="card-body">
+            <form th:action="@{/collections/report}" method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="fromDate" class="form-label fw-semibold">From Date</label>
+                    <input type="date" class="form-control" id="fromDate" name="fromDate" th:value="${fromDate}" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="toDate" class="form-label fw-semibold">To Date</label>
+                    <input type="date" class="form-control" id="toDate" name="toDate" th:value="${toDate}" required>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel me-1"></i> Tạo báo cáo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${reportData.totalRecords == 0}" class="card shadow-sm border-0 py-5 mb-4 text-center">
+        <div class="card-body">
+            <i class="bi bi-inbox display-4 text-muted mb-3 d-block"></i>
+            <h5>No Data Found</h5>
+            <p class="text-muted">No collection records found in the selected date range.</p>
+        </div>
+    </div>
+
+    <div th:if="${reportData.totalRecords > 0}">
+        <!-- Summary Cards Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted text-uppercase mb-2">Total Weight</h6>
+                        <h3 class="mb-0 text-primary">
+                            <span th:text="${#numbers.formatDecimal(reportData.totalWeightKg, 1, 2)}">0.00</span> kg
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted text-uppercase mb-2">Total Records</h6>
+                        <h3 class="mb-0 text-info" th:text="${reportData.totalRecords}">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted text-uppercase mb-2">Top Colony</h6>
+                        <h4 class="mb-1 text-warning" th:text="${reportData.topColonyCode}">Code</h4>
+                        <small class="text-muted" th:text="${#numbers.formatDecimal(reportData.topColonyWeightKg, 1, 2) + ' kg'}">0.0 kg</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted text-uppercase mb-2">Top Pollen</h6>
+                        <h4 class="mb-1 text-success" th:text="${reportData.topPollenName}">Name</h4>
+                        <small class="text-muted" th:text="${#numbers.formatDecimal(reportData.topPollenWeightKg, 1, 2) + ' kg'}">0.0 kg</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Colony Breakdown -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-house text-warning me-2"></i> By Colony</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>Colony Code</th>
+                                    <th>Location</th>
+                                    <th class="text-end">Weight (kg)</th>
+                                    <th class="text-end">Records</th>
+                                    <th class="text-end">% Total</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="cs : ${reportData.colonySummaries}">
+                                    <td class="fw-semibold" th:text="${cs.colonyCode}">Code</td>
+                                    <td th:text="${cs.location}">Location</td>
+                                    <td class="text-end" th:text="${#numbers.formatDecimal(cs.totalWeight, 1, 2)}">0.00</td>
+                                    <td class="text-end" th:text="${cs.recordCount}">0</td>
+                                    <td class="text-end">
+                                        <span class="badge bg-secondary" th:text="${reportData.totalWeightKg > 0 ? #numbers.formatDecimal((cs.totalWeight / reportData.totalWeightKg) * 100, 1, 1) + '%' : '0%'}">0%</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pollen Breakdown -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-flower2 text-success me-2"></i> By Pollen</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>Pollen Name</th>
+                                    <th class="text-end">Weight (kg)</th>
+                                    <th class="text-end">Records</th>
+                                    <th class="text-end">% Total</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="ps : ${reportData.pollenSummaries}">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="color-swatch-sm d-inline-block rounded-circle me-2"
+                                                  th:style="'background-color:' + ${ps.colorCode} + '; width:12px; height:12px; border:1px solid #ccc;'"></span>
+                                            <span class="fw-semibold" th:text="${ps.pollenName}">Name</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-end" th:text="${#numbers.formatDecimal(ps.totalWeight, 1, 2)}">0.00</td>
+                                    <td class="text-end" th:text="${ps.recordCount}">0</td>
+                                    <td class="text-end">
+                                        <span class="badge bg-secondary" th:text="${reportData.totalWeightKg > 0 ? #numbers.formatDecimal((ps.totalWeight / reportData.totalWeightKg) * 100, 1, 1) + '%' : '0%'}">0%</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

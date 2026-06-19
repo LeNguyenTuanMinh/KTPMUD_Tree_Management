@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- ============================================
+     Fragment: alert-success (Legacy)
+     ============================================ -->
+<div th:fragment="alert-success(message)" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    <span th:text="${message}">Success message</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+<!-- ============================================
+     Fragment: alert-error (Legacy)
+     ============================================ -->
+<div th:fragment="alert-error(message)" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <span th:text="${message}">Error message</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+<!-- ============================================
+     Fragment: toast-success
+     Usage: <div th:replace="~{fragments/components :: toast-success('Message')}"></div>
+     ============================================ -->
+<div th:fragment="toast-success(message)" class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+  <div class="d-flex">
+    <div class="toast-body">
+      <i class="bi bi-check-circle-fill me-2"></i>
+      <span th:text="${message}">Success message</span>
+    </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+</div>
+
+<!-- ============================================
+     Fragment: toast-error
+     Usage: <div th:replace="~{fragments/components :: toast-error('Message')}"></div>
+     ============================================ -->
+<div th:fragment="toast-error(message)" class="toast align-items-center text-bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+  <div class="d-flex">
+    <div class="toast-body">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      <span th:text="${message}">Error message</span>
+    </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+</div>
+
+<!-- ============================================
+     Fragment: confirm-delete
+     Usage: <div th:replace="~{fragments/components :: confirm-delete}"></div>
+     Trigger: data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-delete-url="..." th:data-delete-name="..."
+     ============================================ -->
+<div th:fragment="confirm-delete">
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0 bg-danger text-white">
+                    <h5 class="modal-title" id="deleteModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Deletion
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <i class="bi bi-trash text-danger display-1 mb-3"></i>
+                    <h5 class="mb-3">Are you sure?</h5>
+                    <p class="text-muted mb-0">You are about to delete <strong id="deleteItemName" class="text-dark">this item</strong>.</p>
+                    <p class="text-muted">This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer border-top-0 justify-content-center">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="get" class="d-inline">
+                        <button type="submit" class="btn btn-danger px-4">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteModal = document.getElementById('deleteModal');
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function (event) {
+                    const trigger = event.relatedTarget;
+                    const deleteUrl = trigger.getAttribute('data-delete-url');
+                    const deleteName = trigger.getAttribute('data-delete-name') || 'this item';
+                    document.getElementById('deleteForm').setAttribute('action', deleteUrl);
+                    document.getElementById('deleteItemName').textContent = deleteName;
+                });
+            }
+        });
+    </script>
+</div>
+
+<!-- ============================================
+     Fragment: pagination
+     Usage: <div th:replace="~{fragments/components :: pagination(${pageData}, '/plants')}"></div>
+     Requires: pageData (Spring Data Page object), baseUrl (String)
+     ============================================ -->
+<div th:fragment="pagination(pageData, baseUrl)" th:if="${pageData != null and pageData.totalPages > 1}" class="d-flex justify-content-between align-items-center mt-4">
+    <div class="text-muted small">
+        Showing <span th:text="${pageData.number * pageData.size + 1}"></span>
+        to <span th:text="${(pageData.number + 1) * pageData.size < pageData.totalElements ? (pageData.number + 1) * pageData.size : pageData.totalElements}"></span>
+        of <span th:text="${pageData.totalElements}"></span> entries
+    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination pagination-sm mb-0 shadow-sm">
+            <!-- First / Previous -->
+            <li class="page-item" th:classappend="${pageData.first} ? 'disabled'">
+                <a class="page-link" th:href="@{${baseUrl}(page=0, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" title="First"><i class="bi bi-chevron-double-left"></i></a>
+            </li>
+            <li class="page-item" th:classappend="${pageData.first} ? 'disabled'">
+                <a class="page-link" th:href="@{${baseUrl}(page=${pageData.number - 1}, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" title="Previous"><i class="bi bi-chevron-left"></i></a>
+            </li>
+            
+            <!-- Page numbers -->
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, pageData.totalPages - 1)}" 
+                th:classappend="${i == pageData.number} ? 'active'"
+                th:if="${i >= pageData.number - 2 and i <= pageData.number + 2}">
+                <a class="page-link" th:href="@{${baseUrl}(page=${i}, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" th:text="${i + 1}">1</a>
+            </li>
+            
+            <!-- Next / Last -->
+            <li class="page-item" th:classappend="${pageData.last} ? 'disabled'">
+                <a class="page-link" th:href="@{${baseUrl}(page=${pageData.number + 1}, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" title="Next"><i class="bi bi-chevron-right"></i></a>
+            </li>
+            <li class="page-item" th:classappend="${pageData.last} ? 'disabled'">
+                <a class="page-link" th:href="@{${baseUrl}(page=${pageData.totalPages - 1}, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" title="Last"><i class="bi bi-chevron-double-right"></i></a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- ============================================
+     Fragment: breadcrumb
+     Usage: <div th:replace="~{fragments/components :: breadcrumb('Dashboard', 'List')}"></div>
+     ============================================ -->
+<div th:fragment="breadcrumb(parent, current)">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-transparent p-0 mb-3">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}" class="text-decoration-none text-muted"><i class="bi bi-house-door"></i> Home</a></li>
+            <li class="breadcrumb-item" th:if="${parent}"><a href="#" class="text-decoration-none text-muted" th:text="${parent}">Parent</a></li>
+            <li class="breadcrumb-item active text-primary fw-semibold" aria-current="page" th:text="${current}">Current</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- ============================================
+     Fragment: card-stat
+     Usage: <div th:replace="~{fragments/components :: card-stat('Plants', ${count}, 'bi-flower1', 'primary', '/plants')}"></div>
+     ============================================ -->
+<div th:fragment="card-stat(title, count, icon, color, url)" class="card shadow-sm border-0 border-start border-4 border-primary h-100 py-2">
+    <div class="card-body">
+        <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-uppercase mb-1 text-muted" th:text="${title}">Title</div>
+                <div class="h3 mb-0 font-weight-bold text-dark" th:text="${count}">0</div>
+            </div>
+            <div class="col-auto">
+                <i class="bi fa-2x text-gray-300" th:classappend="${icon} + ' text-' + ${color}" style="font-size: 2.5rem; opacity: 0.8;"></i>
+            </div>
+        </div>
+        <a th:if="${url}" th:href="@{${url}}" class="stretched-link"></a>
+    </div>
+</div>
+
+<!-- ============================================
+     Fragment: sidebar
+     ============================================ -->
+<div th:fragment="sidebar" class="sidebar bg-dark text-white shadow" id="sidebar">
+    <div class="sidebar-header d-flex align-items-center justify-content-center py-4 border-bottom border-secondary">
+        <i class="bi bi-bug-fill text-warning fs-3 me-2"></i>
+        <h4 class="mb-0 fw-bold text-white">Bee Pollen</h4>
+    </div>
+    <div class="sidebar-menu p-3 overflow-auto" style="height: calc(100vh - 150px);">
+        <ul class="nav flex-column gap-1">
+            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-2 px-3" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">Main</li>
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
+                <a th:href="@{/dashboard}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'dashboard'} ? 'active bg-primary'">
+                    <i class="bi bi-speedometer2 me-3 fs-5"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-4 px-3">Management</li>
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
+                <a th:href="@{/plants}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'plants'} ? 'active bg-primary'">
+                    <i class="bi bi-flower1 me-3 fs-5"></i> Plants
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
+                <a th:href="@{/pollens}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'pollens'} ? 'active bg-primary'">
+                    <i class="bi bi-flower2 me-3 fs-5"></i> Pollens
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
+                <a th:href="@{/colonies}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'colonies'} ? 'active bg-primary'">
+                    <i class="bi bi-grid-3x3-gap-fill me-3 fs-5"></i> Bee Colonies
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
+                <a th:href="@{/collections}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'collections'} ? 'active bg-primary'">
+                    <i class="bi bi-clipboard-data me-3 fs-5"></i> Collection Tracking
+                </a>
+            </li>
+            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-4 px-3" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">AI & Support</li>
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
+                <a th:href="@{/ai-assistant}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'ai-assistant'} ? 'active bg-primary'">
+                    <i class="bi bi-robot me-3 fs-5 text-warning"></i> AI Assistant
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================
+     Fragment: navbar
+     ============================================ -->
+<div th:fragment="navbar" class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm px-4 py-3 sticky-top">
+    <div class="d-flex w-100 justify-content-between align-items-center">
+        <!-- Sidebar toggle (mobile) -->
+        <button class="btn btn-light d-lg-none border-0 shadow-sm" type="button" onclick="toggleSidebar()">
+            <i class="bi bi-list fs-4"></i>
+        </button>
+        
+
+        <!-- User menu -->
+        <ul class="navbar-nav ms-auto align-items-center">
+            <li class="nav-item dropdown pe-3">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="me-2 d-none d-lg-block text-end">
+                        <span class="d-block text-gray-600 small fw-bold" sec:authentication="name">Username</span>
+                        <span class="d-block text-muted" style="font-size: 0.7rem;" sec:authentication="principal.authorities">[ROLE_USER]</span>
+                    </div>
+                    <img class="img-profile rounded-circle border" th:src="@{https://api.dicebear.com/8.x/initials/svg(seed=${#authentication.name})}" width="40" height="40" alt="Profile">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2 text-muted"></i>My Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit" class="dropdown-item text-danger">
+                                <i class="bi bi-box-arrow-right me-2"></i>Sign out
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================
+     Fragment: footer
+     ============================================ -->
+<div th:fragment="footer" class="footer bg-white border-top py-3 mt-auto">
+    <div class="container-fluid text-center text-muted small">
+        <span>Copyright &copy; Bee Pollen Management System 2026</span>
+    </div>
+</div>
+
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="${pollenId != null ? 'Edit Pollen' : 'Add Pollen'}">Pollen Form</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>
+                <i class="bi bi-flower2 text-success me-2"></i>
+                <span th:if="${pollenId == null}">Add New Pollen</span>
+                <span th:if="${pollenId != null}">Edit Pollen</span>
+            </h2>
+            <p class="text-muted mb-0">Manage pollen details</p>
+        </div>
+        <div>
+            <a th:href="@{/pollens}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back to List
+            </a>
+        </div>
+    </div>
+
+    <!-- Pollen Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <form th:action="${pollenId != null} ? @{/pollens/{id}/edit(id=${pollenId})} : @{/pollens}"
+                          method="post" th:object="${pollen}">
+
+                        <!-- Name Field -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">
+                                Pollen Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" id="name" class="form-control"
+                                   th:field="*{name}"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"
+                                   placeholder="Enter pollen name">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Shape Field -->
+                            <div class="col-md-6 mb-3">
+                                <label for="shape" class="form-label">Shape</label>
+                                <select id="shape" class="form-select"
+                                        th:field="*{shape}"
+                                        th:classappend="${#fields.hasErrors('shape')} ? 'is-invalid'">
+                                    <option value="">-- Select Shape --</option>
+                                    <option value="Spherical">Spherical</option>
+                                    <option value="Oblate">Oblate</option>
+                                    <option value="Prolate">Prolate</option>
+                                    <option value="Elliptical">Elliptical</option>
+                                    <option value="Triangular">Triangular</option>
+                                    <option value="Irregular">Irregular</option>
+                                </select>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('shape')}" th:errors="*{shape}"></div>
+                            </div>
+
+                            <!-- Size Field -->
+                            <div class="col-md-6 mb-3">
+                                <label for="sizeMicron" class="form-label">Size (μm)</label>
+                                <input type="number" id="sizeMicron" class="form-control"
+                                       th:field="*{sizeMicron}"
+                                       step="0.01" min="0"
+                                       placeholder="Enter size in microns">
+                            </div>
+                        </div>
+
+                        <!-- Surface Characteristic Field -->
+                        <div class="mb-3">
+                            <label for="surfaceCharacteristic" class="form-label">Surface Characteristic</label>
+                            <textarea id="surfaceCharacteristic" class="form-control" rows="3"
+                                      th:field="*{surfaceCharacteristic}"
+                                      th:classappend="${#fields.hasErrors('surfaceCharacteristic')} ? 'is-invalid'"
+                                      placeholder="Describe the surface characteristic (e.g., smooth, echinate, reticulate)"></textarea>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('surfaceCharacteristic')}"
+                                 th:errors="*{surfaceCharacteristic}"></div>
+                        </div>
+
+                        <!-- Microscope Image Field -->
+                        <div class="mb-3">
+                            <label for="microscopeImage" class="form-label">Microscope Image URL</label>
+                            <input type="text" id="microscopeImage" class="form-control"
+                                   th:field="*{microscopeImage}"
+                                   th:classappend="${#fields.hasErrors('microscopeImage')} ? 'is-invalid'"
+                                   placeholder="Enter image URL or path">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('microscopeImage')}"
+                                 th:errors="*{microscopeImage}"></div>
+                            <div class="form-text">Provide a URL or file path to the microscope image.</div>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div class="mb-3" th:if="${pollen.microscopeImage != null and !pollen.microscopeImage.isEmpty()}">
+                            <label class="form-label">Image Preview</label>
+                            <div>
+                                <img th:src="${pollen.microscopeImage}" alt="Microscope Image Preview"
+                                     class="img-thumbnail" style="max-height: 200px;"
+                                     onerror="this.style.display='none'">
+                            </div>
+                        </div>
+
+                        <!-- Plant Associations -->
+                        <div class="mb-4">
+                            <label class="form-label">Associated Plants</label>
+                            <div class="card bg-light border-0">
+                                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                                    <div th:if="${allPlants != null and !allPlants.isEmpty()}">
+                                        <div class="form-check" th:each="plant : ${allPlants}">
+                                            <input class="form-check-input" type="checkbox"
+                                                   th:field="*{plantIds}"
+                                                   th:value="${plant.id}"
+                                                   th:id="'plant_' + ${plant.id}">
+                                            <label class="form-check-label" th:for="'plant_' + ${plant.id}"
+                                                   th:text="${plant.commonName != null ? plant.commonName : plant.scientificName}">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div th:if="${allPlants == null or allPlants.isEmpty()}" class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>No plants available. Add plants first.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-text">Select one or more plants to associate with this pollen.</div>
+                        </div>
+
+                        <!-- Form Buttons -->
+                        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                            <a th:href="@{/pollens}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-lg me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-lg me-1"></i>
+                                <span th:if="${pollenId != null}">Update Pollen</span>
+                                <span th:if="${pollenId == null}">Create Pollen</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-speedometer2 text-warning me-2"></i> Dashboard</h2>
+            <span class="text-muted">Welcome back! Here's what's happening with your bee pollen data.</span>
+        </div>
+        <div th:if="${iotEnabled}">
+            <form th:action="@{/iot/toggle}" method="post" class="d-inline">
+                <button type="submit" class="btn" th:classappend="${iotPaused} ? 'btn-success' : 'btn-outline-danger'">
+                    <i class="bi" th:classappend="${iotPaused} ? 'bi-play-fill' : 'bi-pause-fill'"></i>
+                    <span th:text="${iotPaused} ? 'Resume IoT Simulator' : 'Pause IoT Simulator'"></span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Stat Cards Row -->
+    <div class="row g-4 mb-4">
+        <!-- Total Plants -->
+        <div class="col-xl-3 col-md-6">
+            <div th:replace="~{fragments/components :: card-stat('Total Plants', ${dashboard.totalPlants}, 'bi-flower1', 'success', '/plants')}"></div>
+        </div>
+        
+        <!-- Total Pollens -->
+        <div class="col-xl-3 col-md-6">
+            <div th:replace="~{fragments/components :: card-stat('Total Pollens', ${dashboard.totalPollens}, 'bi-flower2', 'warning', '/pollens')}"></div>
+        </div>
+        
+        <!-- Bee Colonies -->
+        <div class="col-xl-3 col-md-6">
+            <div th:replace="~{fragments/components :: card-stat('Bee Colonies', ${dashboard.totalColonies}, 'bi-hexagon-fill', 'primary', '/colonies')}"></div>
+        </div>
+        
+        <!-- Collections -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow-sm border-0 border-start border-4 border-info h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1 text-muted">Collections</div>
+                            <div class="h3 mb-0 font-weight-bold text-dark" th:text="${dashboard.totalCollections}">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-clipboard-data fa-2x text-info" style="font-size: 2.5rem; opacity: 0.8;"></i>
+                        </div>
+                    </div>
+                    <a th:href="@{/collections}" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Weight Banner -->
+    <div class="card shadow-sm border-0 bg-warning bg-opacity-10 mb-4">
+        <div class="card-body d-flex align-items-center p-4">
+            <div class="bg-warning text-white rounded-circle p-3 me-4 d-flex align-items-center justify-content-center shadow-sm" style="width: 60px; height: 60px;">
+                <i class="bi bi-bar-chart-fill fs-3"></i>
+            </div>
+            <div>
+                <h5 class="card-title fw-bold text-dark mb-1">Total Collected Pollen Weight</h5>
+                <h3 class="text-warning mb-0 fw-bold">
+                    <span th:text="${#numbers.formatDecimal(dashboard.totalCollectedWeight, 1, 2)}">0.00</span> 
+                    <small class="fs-5 text-muted fw-normal">grams</small>
+                </h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <!-- Monthly Harvests Line Chart -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 d-flex align-items-center border-bottom">
+                    <i class="bi bi-graph-up-arrow text-primary me-2 fs-5"></i>
+                    <h6 class="m-0 fw-bold text-dark">Xu hướng thu hoạch theo tháng</h6>
+                </div>
+                <div class="card-body" style="position: relative;">
+                    <canvas id="monthlyHarvestChart" style="max-height: 300px; width: 100%;"></canvas>
+                    <div id="monthlyHarvestEmpty" class="text-center py-5 d-none">
+                        <i class="bi bi-bar-chart display-4 text-muted mb-3 d-block" style="opacity: 0.3;"></i>
+                        <h6 class="text-muted">Chưa có dữ liệu</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pollen Distribution Pie Chart -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 d-flex align-items-center border-bottom">
+                    <i class="bi bi-pie-chart-fill text-success me-2 fs-5"></i>
+                    <h6 class="m-0 fw-bold text-dark">Phân bổ loại phấn hoa</h6>
+                </div>
+                <div class="card-body d-flex flex-column justify-content-center" style="position: relative;">
+                    <canvas id="pollenPieChart" style="max-height: 250px; width: 100%;"></canvas>
+                    <div id="pollenPieEmpty" class="text-center py-5 d-none">
+                        <i class="bi bi-pie-chart display-4 text-muted mb-3 d-block" style="opacity: 0.3;"></i>
+                        <h6 class="text-muted">Chưa có dữ liệu</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two-Column Section -->
+    <div class="row g-4 mb-4">
+        <!-- Top 5 Pollens -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 d-flex align-items-center border-bottom">
+                    <i class="bi bi-trophy-fill text-warning me-2 fs-5"></i>
+                    <h6 class="m-0 fw-bold text-dark">Top 5 Collected Pollens</h6>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover align-middle mb-0" th:if="${dashboard.topPollens != null and !dashboard.topPollens.isEmpty()}">
+                        <thead class="table-light">
+                        <tr>
+                            <th style="width:60px" class="ps-4">Rank</th>
+                            <th>Pollen Name</th>
+                            <th class="text-end pe-4">Total Weight (g)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="tp, idx : ${dashboard.topPollens}">
+                            <td class="ps-4">
+                                <span class="badge bg-warning text-dark fs-6 rounded-circle" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;" th:text="${idx.index + 1}">1</span>
+                            </td>
+                            <td class="fw-semibold text-dark" th:text="${tp.pollenName}">—</td>
+                            <td class="text-end pe-4 fw-bold text-success" th:text="${#numbers.formatDecimal(tp.totalWeight, 1, 2)}">0.00</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center py-5" th:if="${dashboard.topPollens == null or dashboard.topPollens.isEmpty()}">
+                        <i class="bi bi-inbox display-4 text-muted mb-3 d-block" style="opacity: 0.3;"></i>
+                        <h6 class="text-muted">No collection data yet.</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest 10 Collections -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 d-flex align-items-center border-bottom">
+                    <i class="bi bi-clock-history text-primary me-2 fs-5"></i>
+                    <h6 class="m-0 fw-bold text-dark">Latest Collections</h6>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover align-middle mb-0" th:if="${dashboard.latestCollections != null and !dashboard.latestCollections.isEmpty()}">
+                        <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Date</th>
+                            <th>Colony</th>
+                            <th>Pollen</th>
+                            <th class="text-end pe-4">Weight</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="ct : ${dashboard.latestCollections}">
+                            <td class="ps-4 text-muted small" th:text="${ct.collectionDate}">—</td>
+                            <td><span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle" th:text="${ct.colonyCode}">—</span></td>
+                            <td class="fw-semibold text-dark" th:text="${ct.pollenName}">—</td>
+                            <td class="text-end pe-4 fw-bold" th:text="${#numbers.formatDecimal(ct.collectedWeight, 1, 2)} + ' g'">0.00 g</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center py-5" th:if="${dashboard.latestCollections == null or dashboard.latestCollections.isEmpty()}">
+                        <i class="bi bi-journal-x display-4 text-muted mb-3 d-block" style="opacity: 0.3;"></i>
+                        <h6 class="text-muted">No collection records yet.</h6>
+                    </div>
+                </div>
+                <div class="card-footer bg-white text-center py-3 border-top-0" th:if="${dashboard.latestCollections != null and !dashboard.latestCollections.isEmpty()}">
+                    <a th:href="@{/collections}" class="btn btn-sm btn-outline-primary">View All Collections</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js and custom logic -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            var monthlyData = /*[[${dashboard.monthlyHarvests}]]*/ [];
+            var pieData = /*[[${dashboard.pollenDistribution}]]*/ [];
+
+            // 1. Line Chart
+            var hasMonthlyData = monthlyData && monthlyData.length > 0 && monthlyData.some(function(d) { return d.totalWeight > 0; });
+            if (!hasMonthlyData) {
+                document.getElementById('monthlyHarvestChart').classList.add('d-none');
+                document.getElementById('monthlyHarvestEmpty').classList.remove('d-none');
+            } else {
+                var ctxLine = document.getElementById('monthlyHarvestChart').getContext('2d');
+                var labels = monthlyData.map(function(d) { return d.monthLabel; });
+                var data = monthlyData.map(function(d) { return d.totalWeight; });
+                
+                new Chart(ctxLine, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Sản lượng (g)',
+                            data: data,
+                            borderColor: '#0d6efd',
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true,
+                            pointBackgroundColor: '#0d6efd'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+
+            // 2. Pie Chart (Doughnut)
+            if (!pieData || pieData.length === 0) {
+                document.getElementById('pollenPieChart').classList.add('d-none');
+                document.getElementById('pollenPieEmpty').classList.remove('d-none');
+            } else {
+                var ctxPie = document.getElementById('pollenPieChart').getContext('2d');
+                var pieLabels = pieData.map(function(d) { return d.pollenName; });
+                var pieWeights = pieData.map(function(d) { return d.totalWeight; });
+                
+                var colors = ['#198754', '#ffc107', '#0dcaf0', '#d63384', '#6f42c1', '#6c757d'];
+                
+                new Chart(ctxPie, {
+                    type: 'doughnut',
+                    data: {
+                        labels: pieLabels,
+                        datasets: [{
+                            data: pieWeights,
+                            backgroundColor: colors,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+        });
+        /*]]>*/
+    </script>
+</div>
+
+</body>
+</html>

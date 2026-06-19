@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>AI Assistant</title>
+    <style>
+        .chat-container {
+            height: 500px;
+            overflow-y: auto;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+            border: 1px solid #dee2e6;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        /* User bubble - green/yellow theme from the system */
+        .chat-bubble.user {
+            background-color: #198754; /* Success green */
+            color: #fff;
+            margin-left: auto;
+            border-bottom-right-radius: 0.25rem;
+        }
+        /* Bot bubble - light gray/yellow tint */
+        .chat-bubble.bot {
+            background-color: #ffc107; /* Warning yellow */
+            color: #212529;
+            margin-right: auto;
+            border-bottom-left-radius: 0.25rem;
+        }
+        .chat-bubble.system {
+            background-color: #e9ecef;
+            color: #6c757d;
+            margin: 0 auto 1rem auto;
+            text-align: center;
+            font-size: 0.85rem;
+            border-radius: 0.5rem;
+        }
+        .typing-indicator {
+            display: inline-flex;
+            gap: 4px;
+            padding: 0.5rem;
+        }
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #212529;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(-4px); opacity: 1; }
+        }
+        .image-preview {
+            max-height: 250px;
+            object-fit: cover;
+            display: none;
+            border-radius: 0.5rem;
+        }
+        .spinner-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.8);
+            z-index: 10;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div th:replace="~{fragments/layout :: page-header('AI Assistant', 'Trợ lý ảo hỗ trợ kiến thức nuôi ong & phấn hoa')}"></div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white pt-3 pb-0 border-bottom-0">
+                    <ul class="nav nav-tabs" id="aiTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chat"
+                                    type="button" role="tab" aria-controls="chat" aria-selected="true">
+                                <i class="bi bi-chat-dots me-1"></i> Trò chuyện
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="plant-tab" data-bs-toggle="tab" data-bs-target="#plant"
+                                    type="button" role="tab" aria-controls="plant" aria-selected="false">
+                                <i class="bi bi-flower1 me-1"></i> Nhận diện cây
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="colony-tab" data-bs-toggle="tab" data-bs-target="#colony"
+                                    type="button" role="tab" aria-controls="colony" aria-selected="false">
+                                <i class="bi bi-bug me-1"></i> Đánh giá bầy ong
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="aiTabsContent">
+                        <!-- Chat Tab -->
+                        <div class="tab-pane fade show active" id="chat" role="tabpanel" aria-labelledby="chat-tab">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted small">Powered by Gemini AI</span>
+                                <button type="button" class="btn btn-sm btn-outline-danger" id="btnClearChat">
+                                    <i class="bi bi-trash"></i> Xoá hội thoại
+                                </button>
+                            </div>
+                            
+                            <div class="chat-container mb-3" id="chatBox">
+                                <div class="chat-bubble system">
+                                    Xin chào! Tôi là trợ lý AI chuyên môn về nuôi ong, thực vật, phấn hoa và mùa hoa. Tôi có thể giúp gì cho bạn hôm nay?
+                                </div>
+                            </div>
+                            
+                            <form id="chatForm">
+                                <div class="input-group">
+                                    <input type="text" id="chatInput" class="form-control" placeholder="Nhập câu hỏi của bạn..." autocomplete="off" required>
+                                    <button class="btn btn-success" type="submit" id="btnSend">
+                                        <i class="bi bi-send"></i> Gửi
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Plant Identify Tab -->
+                        <div class="tab-pane fade position-relative" id="plant" role="tabpanel" aria-labelledby="plant-tab">
+                            <div class="spinner-overlay" id="plantSpinner">
+                                <div class="text-center">
+                                    <div class="spinner-border text-success" role="status"></div>
+                                    <div class="mt-2 text-muted fw-bold">AI đang phân tích ảnh...</div>
+                                </div>
+                            </div>
+                            <form id="plantForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Tải lên ảnh cây/hoa (JPEG, PNG. Tối đa 5MB)</label>
+                                    <input class="form-control" type="file" id="plantImage" accept="image/jpeg, image/png" capture="environment" required>
+                                </div>
+                                <div class="text-center mb-3">
+                                    <img id="plantPreview" src="" alt="Preview" class="image-preview img-fluid mx-auto shadow-sm">
+                                </div>
+                                <button type="submit" class="btn btn-success w-100"><i class="bi bi-search"></i> Phân tích ảnh</button>
+                            </form>
+                            
+                            <div id="plantResult" class="mt-4" style="display: none;">
+                                <h5 class="border-bottom pb-2 mb-3">Kết quả nhận diện</h5>
+                                <div class="card shadow-sm border-success">
+                                    <div class="card-body">
+                                        <div id="plantRawAlert" class="alert alert-warning py-2 mb-3 d-none small">
+                                            <i class="bi bi-exclamation-triangle"></i> AI không trả về định dạng chuẩn, hiển thị kết quả thô:
+                                        </div>
+                                        <div id="plantJsonContent">
+                                            <h4 class="text-success mb-1" id="plantCommonName">Tên thường gọi</h4>
+                                            <p class="text-muted fst-italic mb-2" id="plantScientificName">Tên khoa học</p>
+                                            <div class="badge bg-secondary mb-3" id="plantFamily">Họ thực vật</div>
+                                            <p class="mb-0" id="plantDescription">Mô tả chi tiết...</p>
+                                        </div>
+                                        <div id="plantRawContent" class="d-none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Colony Assess Tab -->
+                        <div class="tab-pane fade position-relative" id="colony" role="tabpanel" aria-labelledby="colony-tab">
+                            <div class="spinner-overlay" id="colonySpinner">
+                                <div class="text-center">
+                                    <div class="spinner-border text-warning" role="status"></div>
+                                    <div class="mt-2 text-muted fw-bold">AI đang đánh giá...</div>
+                                </div>
+                            </div>
+                            <form id="colonyForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Tải lên ảnh khung cầu ong (JPEG, PNG. Tối đa 5MB)</label>
+                                    <input class="form-control" type="file" id="colonyImage" accept="image/jpeg, image/png" capture="environment" required>
+                                </div>
+                                <div class="text-center mb-3">
+                                    <img id="colonyPreview" src="" alt="Preview" class="image-preview img-fluid mx-auto shadow-sm">
+                                </div>
+                                <button type="submit" class="btn btn-warning text-dark w-100 fw-bold"><i class="bi bi-clipboard-check"></i> Đánh giá bầy ong</button>
+                            </form>
+                            
+                            <div id="colonyResult" class="mt-4" style="display: none;">
+                                <h5 class="border-bottom pb-2 mb-3">Kết quả đánh giá</h5>
+                                <div class="card shadow-sm">
+                                    <div class="card-body">
+                                        <div id="colonyRawAlert" class="alert alert-warning py-2 mb-3 d-none small">
+                                            <i class="bi bi-exclamation-triangle"></i> AI không trả về định dạng chuẩn, hiển thị kết quả thô:
+                                        </div>
+                                        <div id="colonyJsonContent">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <h5 class="mb-0 me-3">Sức khoẻ:</h5>
+                                                <span class="badge fs-6" id="colonyHealthBadge">Tốt</span>
+                                            </div>
+                                            <h6 class="fw-bold">Ghi nhận:</h6>
+                                            <p id="colonyObservations">Chi tiết quan sát...</p>
+                                            <h6 class="fw-bold text-primary">Đề xuất:</h6>
+                                            <p class="mb-0" id="colonyRecommendations">Đề xuất hành động...</p>
+                                        </div>
+                                        <div id="colonyRawContent" class="d-none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="script-extras">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatForm = document.getElementById('chatForm');
+            const chatInput = document.getElementById('chatInput');
+            const chatBox = document.getElementById('chatBox');
+            const btnSend = document.getElementById('btnSend');
+            const btnClearChat = document.getElementById('btnClearChat');
+
+            // CSRF setup
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
+            function escapeHtml(unsafe) {
+                return unsafe
+                     .replace(/&/g, "&amp;")
+                     .replace(/</g, "&lt;")
+                     .replace(/>/g, "&gt;")
+                     .replace(/"/g, "&quot;")
+                     .replace(/'/g, "&#039;");
+            }
+
+            function appendMessage(sender, text) {
+                const div = document.createElement('div');
+                div.className = `chat-bubble ${sender}`;
+                div.innerHTML = escapeHtml(text);
+                chatBox.appendChild(div);
+                scrollToBottom();
+            }
+
+            function appendTypingIndicator() {
+                const div = document.createElement('div');
+                div.className = 'chat-bubble bot typing-indicator-container';
+                div.id = 'typingIndicator';
+                div.innerHTML = `
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                `;
+                chatBox.appendChild(div);
+                scrollToBottom();
+            }
+
+            function removeTypingIndicator() {
+                const indicator = document.getElementById('typingIndicator');
+                if (indicator) {
+                    indicator.remove();
+                }
+            }
+
+            function scrollToBottom() {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            chatForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                // UI updates
+                appendMessage('user', message);
+                chatInput.value = '';
+                btnSend.disabled = true;
+                appendTypingIndicator();
+
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                if (csrfHeader && csrfToken) {
+                    headers[csrfHeader] = csrfToken;
+                }
+
+                fetch('/ai-assistant/chat', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    removeTypingIndicator();
+                    if (data.reply) {
+                        appendMessage('bot', data.reply);
+                    } else {
+                        appendMessage('system', 'Lỗi: Không nhận được phản hồi hợp lệ từ server.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    removeTypingIndicator();
+                    appendMessage('system', 'Đã xảy ra lỗi kết nối. Vui lòng thử lại sau.');
+                })
+                .finally(() => {
+                    btnSend.disabled = false;
+                    chatInput.focus();
+                });
+            });
+
+            btnClearChat.addEventListener('click', function() {
+                if (!confirm('Bạn có chắc muốn xoá lịch sử hội thoại hiện tại?')) return;
+                
+                const headers = { 'Content-Type': 'application/json' };
+                if (csrfHeader && csrfToken) {
+                    headers[csrfHeader] = csrfToken;
+                }
+
+                fetch('/ai-assistant/chat/clear', {
+                    method: 'POST',
+                    headers: headers
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        chatBox.innerHTML = `
+                            <div class="chat-bubble system">
+                                Đã xoá lịch sử hội thoại. Tôi là trợ lý AI chuyên môn về nuôi ong, thực vật, phấn hoa và mùa hoa. Tôi có thể giúp gì cho bạn hôm nay?
+                            </div>
+                        `;
+                    }
+                });
+            });
+
+            // Vision API Logic
+            function setupVisionForm(formId, inputId, previewId, spinnerId, resultContainerId, rawAlertId, jsonContentId, rawContentId, url, renderJsonCallback) {
+                const form = document.getElementById(formId);
+                const input = document.getElementById(inputId);
+                const preview = document.getElementById(previewId);
+                const spinner = document.getElementById(spinnerId);
+                const resultContainer = document.getElementById(resultContainerId);
+                const rawAlert = document.getElementById(rawAlertId);
+                const jsonContent = document.getElementById(jsonContentId);
+                const rawContent = document.getElementById(rawContentId);
+
+                input.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        preview.src = URL.createObjectURL(this.files[0]);
+                        preview.style.display = 'block';
+                        resultContainer.style.display = 'none';
+                    }
+                });
+
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (!input.files || !input.files[0]) return;
+                    
+                    const file = input.files[0];
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert("File vượt quá kích thước 5MB!");
+                        return;
+                    }
+
+                    spinner.style.display = 'flex';
+                    resultContainer.style.display = 'none';
+
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: (csrfHeader && csrfToken) ? { [csrfHeader]: csrfToken } : {},
+                        body: formData
+                    })
+                    .then(response => response.ok ? response.json() : response.json().then(err => Promise.reject(err)))
+                    .then(data => {
+                        resultContainer.style.display = 'block';
+                        if (data.error) {
+                            rawAlert.classList.remove('d-none');
+                            jsonContent.classList.add('d-none');
+                            rawContent.classList.remove('d-none');
+                            rawContent.innerHTML = `<div class="text-danger">${escapeHtml(data.error)}</div>`;
+                        } else if (data.parseError) {
+                            rawAlert.classList.remove('d-none');
+                            jsonContent.classList.add('d-none');
+                            rawContent.classList.remove('d-none');
+                            rawContent.innerHTML = escapeHtml(data.rawText);
+                        } else {
+                            rawAlert.classList.add('d-none');
+                            jsonContent.classList.remove('d-none');
+                            rawContent.classList.add('d-none');
+                            renderJsonCallback(data);
+                        }
+                    })
+                    .catch(err => {
+                        alert("Có lỗi xảy ra: " + (err.error || err.message || "Không rõ nguyên nhân."));
+                    })
+                    .finally(() => {
+                        spinner.style.display = 'none';
+                    });
+                });
+            }
+
+            // Setup Plant
+            setupVisionForm('plantForm', 'plantImage', 'plantPreview', 'plantSpinner', 'plantResult', 
+                'plantRawAlert', 'plantJsonContent', 'plantRawContent', '/ai-assistant/identify-plant',
+                (data) => {
+                    document.getElementById('plantCommonName').textContent = data.commonName || 'Không xác định';
+                    document.getElementById('plantScientificName').textContent = data.scientificName || 'N/A';
+                    document.getElementById('plantFamily').textContent = data.family || 'N/A';
+                    document.getElementById('plantDescription').textContent = data.description || '';
+                }
+            );
+
+            // Setup Colony
+            setupVisionForm('colonyForm', 'colonyImage', 'colonyPreview', 'colonySpinner', 'colonyResult', 
+                'colonyRawAlert', 'colonyJsonContent', 'colonyRawContent', '/ai-assistant/assess-colony',
+                (data) => {
+                    const health = data.healthLevel || 'N/A';
+                    const badge = document.getElementById('colonyHealthBadge');
+                    badge.textContent = health;
+                    badge.className = 'badge fs-6'; // reset
+                    if (health.toLowerCase().includes('tốt')) badge.classList.add('bg-success');
+                    else if (health.toLowerCase().includes('yếu')) badge.classList.add('bg-danger');
+                    else badge.classList.add('bg-warning', 'text-dark');
+                    
+                    document.getElementById('colonyObservations').textContent = data.observations || '';
+                    document.getElementById('colonyRecommendations').textContent = data.recommendations || '';
+                }
+            );
+        });
+    </script>
+</div>
+</body>
+</html>

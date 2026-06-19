@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Collections - Bee Pollen Management</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-clipboard-data text-purple me-2" style="color:#8B5CF6"></i> Collection Tracking</h2>
+            <p class="text-muted mb-0">Manage pollen collection records</p>
+        </div>
+        <div class="d-flex align-items-center">
+            <a th:href="@{/collections/report}" class="btn btn-outline-primary btn-sm me-2">
+                <i class="bi bi-bar-chart-line"></i> Batch Report
+            </a>
+            <a th:href="@{/collections/new}" class="btn btn-honey btn-sm"
+               sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')">
+                <i class="bi bi-plus-lg me-1"></i> Add Record
+            </a>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <form th:action="@{/collections}" method="get" class="search-box">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0" name="keyword" placeholder="Search collection records..."
+                           th:value="${keyword}">
+                    <button class="btn btn-honey" type="submit">Search</button>
+                    <a th:if="${keyword != null and !keyword.isEmpty()}" th:href="@{/collections}"
+                       class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card shadow-sm border-0 mb-4" th:if="${trackings != null and !trackings.isEmpty()}">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">#</th>
+                        <th>Colony Code</th>
+                        <th>Bee Species</th>
+                        <th>Pollen Name</th>
+                        <th class="text-end">Weight (g)</th>
+                        <th>Date</th>
+                        <th>Nguồn</th>
+                        <th>Note</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="ct, idx : ${trackings}">
+                        <td class="ps-4 text-muted small" th:text="${pageData.number * pageData.size + idx.index + 1}">1</td>
+                        <td>
+                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle" th:text="${ct.colonyCode}">—</span>
+                        </td>
+                        <td class="text-muted" th:text="${ct.beeSpecies}">—</td>
+                        <td class="fw-semibold text-dark" th:text="${ct.pollenName}">—</td>
+                        <td class="text-end fw-bold text-success" th:text="${#numbers.formatDecimal(ct.collectedWeight, 1, 2)}">0.00</td>
+                        <td class="text-muted small" th:text="${ct.collectionDate}">—</td>
+                        <td>
+                            <span th:if="${ct.source != null and ct.source.name() == 'IOT_SIMULATED'}" class="badge bg-info text-dark">IoT</span>
+                            <span th:unless="${ct.source != null and ct.source.name() == 'IOT_SIMULATED'}" class="text-muted small">Thủ công</span>
+                        </td>
+                        <td class="text-muted small">
+                            <span th:if="${ct.note != null and ct.note.length() > 30}"
+                                  th:text="${ct.note.substring(0, 30)} + '...'" th:title="${ct.note}"></span>
+                            <span th:if="${ct.note != null and ct.note.length() <= 30}" th:text="${ct.note}"></span>
+                            <span th:if="${ct.note == null}">—</span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <a th:href="@{/collections/{id}(id=${ct.id})}" class="btn btn-sm btn-outline-info" title="View">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a th:href="@{/collections/{id}/edit(id=${ct.id})}" class="btn btn-sm btn-outline-warning" title="Edit"
+                               sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <button type="button" class="btn btn-sm btn-outline-danger" title="Delete"
+                                    sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    th:data-delete-url="@{/collections/{id}/delete(id=${ct.id})}"
+                                    th:data-delete-name="'Collection record'">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white py-3 border-top-0">
+            <!-- Pagination -->
+            <div th:replace="~{fragments/components :: pagination(${pageData}, '/collections')}"></div>
+        </div>
+    </div>
+    
+    <!-- Empty State -->
+    <div class="text-center py-5 bg-white rounded shadow-sm" th:if="${trackings == null or trackings.isEmpty()}">
+        <i class="bi bi-clipboard display-1 text-muted mb-3 d-block" style="opacity: 0.2;"></i>
+        <h4 class="text-muted mb-3">No collection records found.</h4>
+        <p class="text-muted mb-4">You haven't added any collection records yet.</p>
+        <a th:href="@{/collections/new}" class="btn btn-honey" sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')">
+            <i class="bi bi-plus-lg me-1"></i> Add First Record
+        </a>
+    </div>
+
+</div>
+
+<th:block layout:fragment="script-extras">
+    <!-- Delete Confirmation Modal -->
+    <div th:replace="~{fragments/components :: confirm-delete}"></div>
+</th:block>
+
+</body>
+</html>

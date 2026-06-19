@@ -1,0 +1,131 @@
+/* ============================================================
+   Bee Pollen & Plant Management System — Custom Stylesheet
+   Color Palette: Amber/Honey + Emerald/Plant Green
+   ============================================================ */
+
+:root {
+    --honey:        #F59E0B;
+    --honey-dark:   #D97706;
+    --honey-light:  #FEF3C7;
+    --forest:       #059669;
+    --forest-dark:  #047857;
+    --forest-light: #D1FAE5;
+    --sidebar-bg:   #1E293B;
+    --sidebar-hover:#334155;
+    --body-bg:      #F1F5F9;
+    --card-shadow:  0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --card-shadow-lg: 0 4px 14px rgba(0,0,0,.1);
+}
+
+body { background: var(--body-bg); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
+/* ---- Sidebar ---- */
+.sidebar {
+    width: 260px; min-height: 100vh; background: var(--sidebar-bg);
+    position: fixed; top: 0; left: 0; z-index: 1030;
+    display: flex; flex-direction: column; transition: transform .3s;
+}
+.sidebar-header {
+    padding: 1.5rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,.08);
+    font-size: 1.25rem; font-weight: 700; color: #fff;
+}
+.sidebar-header span { color: var(--honey); }
+.sidebar .nav { flex: 1; padding: .75rem 0; }
+.sidebar .nav-link {
+    color: rgba(255,255,255,.7); padding: .65rem 1.25rem;
+    display: flex; align-items: center; gap: .65rem;
+    font-size: .9rem; border-left: 3px solid transparent; transition: all .2s;
+}
+.sidebar .nav-link:hover {
+    color: #fff; background: var(--sidebar-hover); border-left-color: var(--honey);
+}
+.sidebar .nav-link.active {
+    color: #fff; background: rgba(245,158,11,.12); border-left-color: var(--honey);
+}
+.sidebar .nav-link i { font-size: 1.1rem; width: 22px; text-align: center; }
+.sidebar-footer {
+    padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,.08);
+    color: rgba(255,255,255,.5); font-size: .82rem;
+}
+.sidebar-footer a { color: rgba(255,255,255,.7); text-decoration: none; }
+.sidebar-footer a:hover { color: var(--honey); }
+
+/* ---- Main Content ---- */
+.main-content { margin-left: 260px; min-height: 100vh; }
+
+/* ---- Page Header ---- */
+.page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 1rem; margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--honey-light);
+}
+.page-header h2 { margin: 0; font-weight: 700; color: #1E293B; }
+
+/* ---- Stat Cards ---- */
+.stat-card {
+    background: #fff; border-radius: .5rem; padding: 1.25rem 1.5rem;
+    box-shadow: var(--card-shadow); border-left: 4px solid var(--honey);
+    transition: transform .2s, box-shadow .2s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--card-shadow-lg); }
+.stat-card .stat-icon { font-size: 2rem; opacity: .8; }
+.stat-card .stat-value { font-size: 1.8rem; font-weight: 700; color: #1E293B; }
+.stat-card .stat-label { font-size: .85rem; color: #64748B; text-transform: uppercase; letter-spacing: .5px; }
+.stat-card.green  { border-left-color: var(--forest); }
+.stat-card.amber  { border-left-color: var(--honey); }
+.stat-card.blue   { border-left-color: #3B82F6; }
+.stat-card.purple { border-left-color: #8B5CF6; }
+
+/* ---- Cards & Tables ---- */
+.card { border: none; box-shadow: var(--card-shadow); border-radius: .5rem; }
+.card-header { background: #fff; font-weight: 600; border-bottom: 1px solid #E2E8F0; }
+.table-container { background: #fff; border-radius: .5rem; box-shadow: var(--card-shadow); overflow: hidden; }
+.table-container .table { margin-bottom: 0; }
+.table thead th { background: #F8FAFC; font-size: .82rem; text-transform: uppercase; letter-spacing: .5px; color: #64748B; border-bottom: 2px solid #E2E8F0; }
+.table tbody tr:hover { background: #FEFCE8; }
+
+/* ---- Buttons ---- */
+.btn-honey { background: var(--honey); color: #fff; border: none; }
+.btn-honey:hover { background: var(--honey-dark); color: #fff; }
+.btn-forest { background: var(--forest); color: #fff; border: none; }
+.btn-forest:hover { background: var(--forest-dark); color: #fff; }
+
+/* ---- Search Box ---- */
+.search-box { max-width: 400px; }
+.search-box .form-control:focus { border-color: var(--honey); box-shadow: 0 0 0 .2rem rgba(245,158,11,.25); }
+
+/* ---- Badges ---- */
+.badge-healthy  { background: #059669; }
+.badge-weak     { background: #F59E0B; }
+.badge-critical { background: #EF4444; }
+.badge-dead     { background: #475569; }
+
+/* ---- Login / Register ---- */
+.auth-wrapper {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #FEF3C7 0%, #D1FAE5 50%, #DBEAFE 100%);
+}
+.auth-card {
+    width: 100%; max-width: 440px; background: #fff; border-radius: .75rem;
+    box-shadow: var(--card-shadow-lg); padding: 2.5rem;
+}
+.auth-card .brand { font-size: 2.5rem; text-align: center; margin-bottom: .5rem; }
+.auth-card h3 { text-align: center; font-weight: 700; color: #1E293B; }
+.auth-card p.subtitle { text-align: center; color: #64748B; margin-bottom: 1.5rem; }
+
+/* ---- Forms ---- */
+.form-label { font-weight: 500; color: #334155; font-size: .9rem; }
+.form-control:focus, .form-select:focus {
+    border-color: var(--honey); box-shadow: 0 0 0 .2rem rgba(245,158,11,.2);
+}
+
+/* ---- Empty State ---- */
+.empty-state { text-align: center; padding: 3rem 1rem; color: #94A3B8; }
+.empty-state i { font-size: 3rem; margin-bottom: 1rem; display: block; }
+
+/* ---- Responsive ---- */
+@media (max-width: 991.98px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.show { transform: translateX(0); }
+    .main-content { margin-left: 0; }
+}
