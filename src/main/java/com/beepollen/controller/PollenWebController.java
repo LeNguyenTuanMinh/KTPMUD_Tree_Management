@@ -84,7 +84,7 @@ public class PollenWebController {
             return "pollens/form";
         }
         pollenService.createPollen(request);
-        redirectAttributes.addFlashAttribute("successMessage", "Pollen created successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Thêm mới phấn hoa thành công!");
         return "redirect:/pollens";
     }
 
@@ -138,7 +138,7 @@ public class PollenWebController {
             return "pollens/form";
         }
         pollenService.updatePollen(id, request);
-        redirectAttributes.addFlashAttribute("successMessage", "Pollen updated successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật phấn hoa thành công!");
         return "redirect:/pollens";
     }
 
@@ -166,7 +166,7 @@ public class PollenWebController {
     @GetMapping("/{id}/delete")
     public String deletePollen(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         pollenService.deletePollen(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Pollen deleted successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Xoá phấn hoa thành công!");
         return "redirect:/pollens";
     }
 

@@ -1,65 +1,67 @@
-# 🐝 Bee Pollen & Plant Management System
+# 🐝 Hệ thống Quản lý Nuôi ong & Phấn hoa (Bee Pollen Management)
 
-A comprehensive, full-stack Spring Boot application designed to manage apiaries, bee colonies, plant flora, and track pollen harvesting yields. The system integrates IoT data simulation for real-time tracking, AI-powered assistance using Google Gemini, and a robust role-based access control architecture.
+Một ứng dụng Spring Boot toàn diện được thiết kế để quản lý các trang trại nuôi ong, bầy ong, hệ thực vật và theo dõi sản lượng thu hoạch phấn hoa. Hệ thống tích hợp mô phỏng dữ liệu IoT để theo dõi thời gian thực, trợ lý ảo AI sử dụng Google Gemini và kiến trúc phân quyền truy cập mạnh mẽ.
 
----
-
-## 🌟 Features
-
-### 🔐 Security & User Management
-*   **Hybrid Authentication**: Supports both Form-based Session Login (for Web UI) and Stateless JWT Bearer Tokens (for REST APIs).
-*   **Role-Based Access Control (RBAC)**:
-    *   `ADMIN`: Full access to all modules and configurations.
-    *   `BEEKEEPER`: Manage bee colonies, track collections, and view plant/pollen databases.
-    *   `RESEARCHER`: Read-only access to plant and pollen botanical data.
-    *   `USER`: Default role.
-*   **Secure Password Recovery**: Built-in "Forgot Password" flow utilizing one-time, time-limited reset tokens and simulated email delivery.
-*   **User Activity Log (Audit Trail)**: Powered by Spring Data JPA Auditing, automatically tracking `CreatedBy` and `UpdatedBy` actions across the platform to build a chronological user activity feed.
-
-### 🌼 Core Domain Modules
-*   **Flora & Plant Management**: Catalog botanical data, flowering seasons, and regions.
-*   **Pollen Profiles**: Manage pollen types, microscopic shapes, and color codes. Maps Many-to-Many with Plants.
-*   **Apiary & Bee Colonies**: Track colony health status (`HEALTHY`, `SICK`, `WEAK`), species, GPS coordinates, and estimated populations.
-*   **Harvest Tracking**: Record and aggregate pollen collection yields (in grams) mapped to specific colonies and pollen types.
-
-### 🤖 Smart Features
-*   **IoT Simulator**: A built-in background scheduler (`IotDeviceSimulator`) that mimics smart scales/sensors in the apiary, automatically reporting random pollen harvest data periodically.
-*   **AI Assistant**: Integration with **Google Gemini AI** to provide smart chatbot capabilities or contextual botanical information retrieval directly within the app.
-
-### 📊 Dashboard & UI
-*   **Responsive UI**: Built with Thymeleaf Layout Dialect, Bootstrap 5, and Bootstrap Icons.
-*   **Analytics Dashboard**: Visualizes top-collected pollen types, total yields, and colony health distributions.
-*   **Dynamic Navigation**: UI elements and action buttons (Add, Edit, Delete) dynamically adapt based on the user's security role.
+Toàn bộ giao diện người dùng (UI) đã được Việt hóa 100%.
 
 ---
 
-## 🛠️ Technology Stack
+## 🌟 Tính năng chính
+
+### 🔐 Bảo mật & Quản lý người dùng
+*   **Xác thực lai (Hybrid Authentication)**: Hỗ trợ cả đăng nhập theo phiên (Session) cho giao diện Web và token JWT (Stateless Bearer Tokens) cho API REST.
+*   **Phân quyền truy cập (RBAC)**:
+    *   `ADMIN`: Quyền truy cập toàn bộ các module và cấu hình.
+    *   `BEEKEEPER`: Quản lý bầy ong, theo dõi thu hoạch, và xem cơ sở dữ liệu thực vật/phấn hoa.
+    *   `RESEARCHER`: Quyền chỉ xem (read-only) đối với dữ liệu thực vật và phấn hoa.
+    *   `USER`: Quyền mặc định.
+*   **Khôi phục mật khẩu an toàn**: Quy trình "Quên mật khẩu" tích hợp sử dụng token dùng một lần, có thời hạn và mô phỏng gửi email.
+*   **Nhật ký hoạt động (Audit Trail)**: Sử dụng Spring Data JPA Auditing, tự động theo dõi người tạo (`CreatedBy`) và người cập nhật (`UpdatedBy`) trên toàn hệ thống để xây dựng nhật ký hoạt động theo thời gian.
+
+### 🌼 Các module quản lý cốt lõi
+*   **Hệ Thực vật**: Lưu trữ danh mục dữ liệu thực vật, mùa ra hoa, và khu vực phân bố.
+*   **Hồ sơ Phấn hoa**: Quản lý các loại phấn hoa, hình dạng vi mô, và mã màu. Liên kết nhiều-nhiều (Many-to-Many) với Thực vật.
+*   **Trang trại & Bầy ong**: Theo dõi tình trạng sức khoẻ (`HEALTHY`, `SICK`, `WEAK`), loài ong, toạ độ GPS, và số lượng ong ước tính.
+*   **Theo dõi Thu hoạch**: Ghi nhận và tổng hợp sản lượng phấn hoa thu hoạch (tính bằng gram) liên kết với từng bầy ong và loại phấn hoa cụ thể.
+
+### 🤖 Tính năng thông minh
+*   **Mô phỏng IoT**: Một bộ lập lịch chạy ngầm (`IotDeviceSimulator`) mô phỏng các cân/cảm biến thông minh tại trại ong, tự động báo cáo dữ liệu thu hoạch phấn hoa ngẫu nhiên theo chu kỳ.
+*   **Trợ lý AI**: Tích hợp với **Google Gemini AI** để cung cấp khả năng hỏi đáp qua chatbot, nhận diện hình ảnh khung cầu ong, nhận diện thực vật trực tiếp trong ứng dụng.
+
+### 📊 Bảng điều khiển & Giao diện
+*   **Giao diện Responsive**: Được xây dựng với Thymeleaf Layout Dialect, Bootstrap 5, và Bootstrap Icons.
+*   **Bảng điều khiển phân tích (Analytics Dashboard)**: Trực quan hoá các loại phấn hoa thu hoạch nhiều nhất, tổng sản lượng, và biểu đồ phân bổ.
+*   **Điều hướng động**: Các thành phần giao diện và nút thao tác (Thêm, Sửa, Xoá) tự động điều chỉnh dựa trên quyền (role) của người dùng.
+
+---
+
+## 🛠️ Công nghệ sử dụng
 
 **Backend**
 *   **Java 17**
 *   **Spring Boot 3.2.x** (Web, Data JPA, Security, Mail, Validation)
 *   **Spring Security 6** (JWT + BCrypt Password Encoding)
 *   **Hibernate** (ORM)
-*   **MySQL** (Relational Database)
-*   **Lombok** (Boilerplate reduction)
+*   **MySQL** (Cơ sở dữ liệu quan hệ)
+*   **Lombok** (Giảm thiểu code boilerplate)
 
 **Frontend**
-*   **Thymeleaf** (Server-side rendering)
+*   **Thymeleaf** (Render phía server)
 *   **Bootstrap 5** (CSS Framework)
-*   **Thymeleaf Extras Spring Security 6** (UI Security tags)
+*   **Thymeleaf Extras Spring Security 6** (Thẻ bảo mật cho UI)
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Hướng dẫn cài đặt
 
-### Prerequisites
-*   **JDK 17** or higher
+### Yêu cầu hệ thống
+*   **JDK 17** trở lên
 *   **Maven** 3.8+
-*   **MySQL Server** (Running on `localhost:3306`)
+*   **MySQL Server** (Chạy trên `localhost:3306`)
 
-### Configuration
-1. Open `src/main/resources/application.yml`.
-2. Configure your MySQL database credentials:
+### Cấu hình
+1. Mở file `src/main/resources/application.yml`.
+2. Cấu hình thông tin kết nối MySQL của bạn:
    ```yaml
    spring:
      datasource:
@@ -67,63 +69,63 @@ A comprehensive, full-stack Spring Boot application designed to manage apiaries,
        username: root
        password: yourpassword
    ```
-3. *(Optional)* Configure the **Gemini API Key** to enable AI features:
+3. *(Tuỳ chọn)* Cấu hình **Gemini API Key** để kích hoạt các tính năng AI:
    ```yaml
    gemini:
      api:
        key: YOUR_GEMINI_API_KEY
    ```
-4. *(Optional)* Enable Email Sending for the Forgot Password feature by uncommenting the `spring.mail` block in `application.yml` and adding your SMTP credentials.
+4. *(Tuỳ chọn)* Bật tính năng Gửi Email cho quy trình Quên mật khẩu bằng cách bỏ comment khối `spring.mail` trong `application.yml` và thêm thông tin SMTP của bạn.
 
-### Running the Application
+### Chạy ứng dụng
 
-To fully utilize the AI features, set your Gemini API key as an environment variable before running the application.
+Để sử dụng đầy đủ các tính năng AI, hãy đặt Gemini API key của bạn dưới dạng biến môi trường trước khi chạy ứng dụng.
 
-**For Windows (PowerShell):**
+**Trên Windows (PowerShell):**
 ```powershell
 $env:GEMINI_API_KEY="your_api_key_here"
 mvn clean spring-boot:run
 ```
 
-**For macOS/Linux (Bash/Zsh):**
+**Trên macOS/Linux (Bash/Zsh):**
 ```bash
 export GEMINI_API_KEY="your_api_key_here"
 ./mvnw clean spring-boot:run
 ```
 
-*(Note: If you do not set the `GEMINI_API_KEY`, the application will still start successfully, but the AI Assistant features will not work).*
+*(Lưu ý: Nếu bạn không thiết lập `GEMINI_API_KEY`, ứng dụng vẫn sẽ khởi động thành công, nhưng các tính năng Trợ lý AI sẽ không hoạt động).*
 
-The application will automatically:
-1. Create the database schema (`ddl-auto: update`).
-2. Seed initial mock data (Admin, Beekeeper, and Researcher accounts, along with sample plants and colonies) via `DataInitializer.java`.
+Ứng dụng sẽ tự động:
+1. Tạo cấu trúc cơ sở dữ liệu (`ddl-auto: update`).
+2. Khởi tạo dữ liệu mẫu (các tài khoản Admin, Beekeeper, Researcher, cùng với các mẫu thực vật và bầy ong) thông qua `DataInitializer.java`.
 
-### Default Accounts
-You can log in with the following seeded accounts:
+### Tài khoản mặc định
+Bạn có thể đăng nhập bằng các tài khoản đã được khởi tạo sẵn sau:
 *   **Admin**: `admin` / `admin123`
 *   **Beekeeper**: `beekeeper` / `beekeeper123`
 *   **Researcher**: `researcher` / `researcher123`
 
-Access the web interface at: **http://localhost:8080**
+Truy cập giao diện web tại: **http://localhost:8080**
 
 ---
 
-## 📂 Project Structure
+## 📂 Cấu trúc dự án
 
 ```text
 src/main/java/com/beepollen/
-├── ai/                 # Google Gemini AI client integration
-├── config/             # Spring Security, JPA Auditing, and Data Seeding configs
+├── ai/                 # Tích hợp Google Gemini AI client
+├── config/             # Cấu hình Spring Security, JPA Auditing, và Data Seeding
 ├── controller/         # Spring MVC Web Controllers
-├── dto/                # Data Transfer Objects for Auth & Requests
-├── entity/             # JPA Domain Models (Plant, Colony, User, etc.)
-├── exception/          # Custom Global Exceptions
-├── iot/                # IoT Device Simulation Scheduler
+├── dto/                # Data Transfer Objects
+├── entity/             # JPA Domain Models (Plant, Colony, User, v.v.)
+├── exception/          # Xử lý ngoại lệ toàn cầu (Global Exceptions)
+├── iot/                # Bộ lập lịch mô phỏng thiết bị IoT
 ├── repository/         # Spring Data JPA Repositories
-├── security/           # JWT Filters, UserDetails implementations
-└── service/            # Core Business Logic & Activity Logging
+├── security/           # JWT Filters, UserDetails
+└── service/            # Logic nghiệp vụ (Business Logic) & Nhật ký hoạt động
 ```
 
 ---
 
-## 📄 License
-This project is for educational and demonstrative purposes, built by an AI assistant!
+## 📄 Giấy phép (License)
+Dự án này phục vụ cho mục đích giáo dục và minh hoạ, được xây dựng bởi một trợ lý AI!

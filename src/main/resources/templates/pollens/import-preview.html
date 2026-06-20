@@ -3,15 +3,15 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main}">
 <head>
-    <title>Preview Imported Pollen Data</title>
+    <title>Xem trước dữ liệu Phấn hoa Nhập</title>
 </head>
 <body>
 
 <div layout:fragment="content">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-file-earmark-pdf text-danger me-2"></i> Preview Pollen Import</h2>
+        <h2><i class="bi bi-file-earmark-pdf text-danger me-2"></i> Xem trước Nhập Phấn hoa</h2>
         <a th:href="@{/pollens}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Cancel
+            <i class="bi bi-arrow-left"></i> Huỷ
         </a>
     </div>
 
@@ -26,36 +26,36 @@
                 
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <label for="name" class="form-label">Pollen Name <span class="text-danger">*</span></label>
+                        <label for="name" class="form-label">Tên Phấn hoa <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="name" th:field="*{name}" required>
                         <div class="text-danger mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>
                     </div>
                     <div class="col-md-4">
-                        <label for="shape" class="form-label">Shape <span class="text-danger">*</span></label>
+                        <label for="shape" class="form-label">Hình dạng <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="shape" th:field="*{shape}" required>
                         <div class="text-danger mt-1" th:if="${#fields.hasErrors('shape')}" th:errors="*{shape}">Error</div>
                     </div>
                     <div class="col-md-4">
-                        <label for="sizeMicron" class="form-label">Size (Microns)</label>
+                        <label for="sizeMicron" class="form-label">Kích thước (Microns)</label>
                         <input type="number" step="0.1" class="form-control" id="sizeMicron" th:field="*{sizeMicron}">
                         <div class="text-danger mt-1" th:if="${#fields.hasErrors('sizeMicron')}" th:errors="*{sizeMicron}">Error</div>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="surfaceCharacteristic" class="form-label">Surface Characteristic</label>
+                    <label for="surfaceCharacteristic" class="form-label">Đặc điểm bề mặt</label>
                     <textarea class="form-control" id="surfaceCharacteristic" th:field="*{surfaceCharacteristic}" rows="3"></textarea>
                     <div class="text-danger mt-1" th:if="${#fields.hasErrors('surfaceCharacteristic')}" th:errors="*{surfaceCharacteristic}">Error</div>
                 </div>
 
                 <!-- Un-extracted fields -->
                 <div class="mb-3">
-                    <label for="microscopeImage" class="form-label">Microscope Image URL</label>
+                    <label for="microscopeImage" class="form-label">Đường dẫn Hình ảnh Kính hiển vi</label>
                     <input type="url" class="form-control" id="microscopeImage" th:field="*{microscopeImage}">
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label">Found In Plants</label>
+                    <label class="form-label">Thực vật liên kết</label>
                     <div class="card p-3 bg-light">
                         <div class="row">
                             <div class="col-md-4 mb-2" th:each="plantOpt : ${allPlants}">
@@ -65,13 +65,13 @@
                                            th:value="${plantOpt.id}"
                                            th:id="${'plant_' + plantOpt.id}">
                                     <label class="form-check-label" th:for="${'plant_' + plantOpt.id}">
-                                        <span th:text="${plantOpt.commonName}">Plant Name</span>
-                                        <small class="text-muted fst-italic" th:text="${'(' + plantOpt.scientificName + ')'}">Scientific</small>
+                                        <span th:text="${plantOpt.commonName}">Tên Thực vật</span>
+                                        <small class="text-muted fst-italic" th:text="${'(' + plantOpt.scientificName + ')'}">Khoa học</small>
                                     </label>
                                 </div>
                             </div>
                             <div class="col-12 text-muted" th:if="${allPlants == null or allPlants.empty}">
-                                <em>No plants available. Create plants first.</em>
+                                <em>Không có thực vật. Hãy tạo thực vật trước.</em>
                             </div>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                 
                 <div class="d-flex justify-content-end gap-2">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save me-1"></i> Save Pollen
+                        <i class="bi bi-save me-1"></i> Lưu Phấn hoa
                     </button>
                 </div>
             </form>

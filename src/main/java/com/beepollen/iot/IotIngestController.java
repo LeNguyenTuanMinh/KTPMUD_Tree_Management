@@ -33,31 +33,31 @@ public class IotIngestController {
             @RequestBody PollenReadingRequest request) {
 
         if (apiKey == null || !apiKey.equals(configuredApiKey)) {
-            log.warn("Unauthorized IoT request: Invalid or missing API key");
+            log.warn("Truy cập IoT trái phép: API key không hợp lệ hoặc bị thiếu");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid or missing X-IoT-Api-Key header"));
+                    .body(Map.of("error", "Header X-IoT-Api-Key không hợp lệ hoặc bị thiếu"));
         }
 
         if (request.getQuantityGrams() == null || request.getQuantityGrams() <= 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "quantityGrams must be greater than 0"));
+                    .body(Map.of("error", "Sản lượng (quantityGrams) phải lớn hơn 0"));
         }
 
         if (request.getColonyId() == null || !beeColonyRepository.existsById(request.getColonyId())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("error", "BeeColony not found with id: " + request.getColonyId()));
+                    .body(Map.of("error", "Không tìm thấy bầy ong với id: " + request.getColonyId()));
         }
 
         if (request.getPlantId() == null || !plantRepository.existsById(request.getPlantId())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("error", "Plant not found with id: " + request.getPlantId()));
+                    .body(Map.of("error", "Không tìm thấy loài thực vật với id: " + request.getPlantId()));
         }
 
         // Validate pollenId existence if it's not null, though the service will also do it.
         // Since CollectionTracking requires a Pollen, pollenId must be provided.
         if (request.getPollenId() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "pollenId is required"));
+                    .body(Map.of("error", "pollenId là bắt buộc"));
         }
 
         CollectionTrackingRequest trackingRequest = new CollectionTrackingRequest();
@@ -65,19 +65,19 @@ public class IotIngestController {
         trackingRequest.setPollenId(request.getPollenId());
         trackingRequest.setCollectedWeight(request.getQuantityGrams());
         trackingRequest.setCollectionDate(request.getCollectedAt() != null ? request.getCollectedAt() : java.time.LocalDate.now());
-        trackingRequest.setNote("IoT simulated data");
+        trackingRequest.setNote("Dữ liệu mô phỏng từ IoT");
 
         try {
             CollectionTrackingDTO saved = collectionTrackingService.createIotTracking(trackingRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (Exception e) {
-            log.error("Failed to process IoT reading", e);
+            log.error("Xử lý dữ liệu IoT thất bại", e);
             // Returning 404 explicitly if pollen is not found (ResourceNotFoundException)
             if (e instanceof com.beepollen.exception.ResourceNotFoundException) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
             }
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Internal Server Error: " + e.getMessage()));
+                    .body(Map.of("error", "Lỗi máy chủ nội bộ: " + e.getMessage()));
         }
     }
 }

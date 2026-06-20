@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/main}">
 <head>
-    <title>Collections - Bee Pollen Management</title>
+    <title>Thu hoạch - Bee Pollen Management</title>
 </head>
 <body>
 
@@ -12,16 +12,16 @@
     <!-- Page Header -->
     <div class="page-header d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2><i class="bi bi-clipboard-data text-purple me-2" style="color:#8B5CF6"></i> Collection Tracking</h2>
-            <p class="text-muted mb-0">Manage pollen collection records</p>
+            <h2><i class="bi bi-clipboard-data text-purple me-2" style="color:#8B5CF6"></i> Theo dõi Thu hoạch</h2>
+            <p class="text-muted mb-0">Quản lý hồ sơ thu hoạch phấn hoa</p>
         </div>
         <div class="d-flex align-items-center">
             <a th:href="@{/collections/report}" class="btn btn-outline-primary btn-sm me-2">
-                <i class="bi bi-bar-chart-line"></i> Batch Report
+                <i class="bi bi-bar-chart-line"></i> Báo cáo Tổng hợp
             </a>
             <a th:href="@{/collections/new}" class="btn btn-honey btn-sm"
                sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')">
-                <i class="bi bi-plus-lg me-1"></i> Add Record
+                <i class="bi bi-plus-lg me-1"></i> Thêm Bản ghi
             </a>
         </div>
     </div>
@@ -39,9 +39,9 @@
             <form th:action="@{/collections}" method="get" class="search-box">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" class="form-control border-start-0 ps-0" name="keyword" placeholder="Search collection records..."
+                    <input type="text" class="form-control border-start-0 ps-0" name="keyword" placeholder="Tìm kiếm hồ sơ thu hoạch..."
                            th:value="${keyword}">
-                    <button class="btn btn-honey" type="submit">Search</button>
+                    <button class="btn btn-honey" type="submit">Tìm kiếm</button>
                     <a th:if="${keyword != null and !keyword.isEmpty()}" th:href="@{/collections}"
                        class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
                 </div>
@@ -57,14 +57,14 @@
                     <thead class="table-light">
                     <tr>
                         <th class="ps-4">#</th>
-                        <th>Colony Code</th>
-                        <th>Bee Species</th>
-                        <th>Pollen Name</th>
-                        <th class="text-end">Weight (g)</th>
-                        <th>Date</th>
+                        <th>Mã Đàn</th>
+                        <th>Loài ong</th>
+                        <th>Tình trạng Sức khoẻ</th>
+                        <th class="text-end">Khối lượng (g)</th>
+                        <th>Ngày</th>
                         <th>Nguồn</th>
-                        <th>Note</th>
-                        <th class="text-end pe-4">Actions</th>
+                        <th>Ghi chú</th>
+                        <th class="text-end pe-4">Thao tác</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -88,14 +88,14 @@
                             <span th:if="${ct.note == null}">—</span>
                         </td>
                         <td class="text-end pe-4">
-                            <a th:href="@{/collections/{id}(id=${ct.id})}" class="btn btn-sm btn-outline-info" title="View">
+                            <a th:href="@{/collections/{id}(id=${ct.id})}" class="btn btn-sm btn-outline-info" title="Xem">
                                 <i class="bi bi-eye"></i>
                             </a>
-                            <a th:href="@{/collections/{id}/edit(id=${ct.id})}" class="btn btn-sm btn-outline-warning" title="Edit"
+                            <a th:href="@{/collections/{id}/edit(id=${ct.id})}" class="btn btn-sm btn-outline-warning" title="Sửa"
                                sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <button type="button" class="btn btn-sm btn-outline-danger" title="Delete"
+                            <button type="button" class="btn btn-sm btn-outline-danger" title="Xoá"
                                     sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')"
                                     data-bs-toggle="modal" data-bs-target="#deleteModal"
                                     th:data-delete-url="@{/collections/{id}/delete(id=${ct.id})}"
@@ -117,10 +117,10 @@
     <!-- Empty State -->
     <div class="text-center py-5 bg-white rounded shadow-sm" th:if="${trackings == null or trackings.isEmpty()}">
         <i class="bi bi-clipboard display-1 text-muted mb-3 d-block" style="opacity: 0.2;"></i>
-        <h4 class="text-muted mb-3">No collection records found.</h4>
-        <p class="text-muted mb-4">You haven't added any collection records yet.</p>
+        <h4 class="text-muted mb-3">Không tìm thấy hồ sơ thu hoạch nào.</h4>
+        <p class="text-muted mb-4">Bạn chưa thêm hồ sơ thu hoạch nào.</p>
         <a th:href="@{/collections/new}" class="btn btn-honey" sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')">
-            <i class="bi bi-plus-lg me-1"></i> Add First Record
+            <i class="bi bi-plus-lg me-1"></i> Thêm Bản ghi đầu tiên
         </a>
     </div>
 

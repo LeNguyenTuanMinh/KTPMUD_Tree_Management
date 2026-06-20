@@ -69,7 +69,7 @@ public class PdfImportController {
             return "plants/import-preview";
         } catch (Exception e) {
             log.error("Error importing plant from PDF", e);
-            redirectAttributes.addFlashAttribute("errorMessage", "Could not extract data from PDF: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể trích xuất dữ liệu từ PDF: " + e.getMessage());
             return "redirect:/plants";
         }
     }
@@ -100,7 +100,7 @@ public class PdfImportController {
             return "pollens/import-preview";
         } catch (Exception e) {
             log.error("Error importing pollen from PDF", e);
-            redirectAttributes.addFlashAttribute("errorMessage", "Could not extract data from PDF: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể trích xuất dữ liệu từ PDF: " + e.getMessage());
             return "redirect:/pollens";
         }
     }

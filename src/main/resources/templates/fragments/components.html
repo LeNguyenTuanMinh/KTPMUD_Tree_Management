@@ -59,20 +59,20 @@
             <div class="modal-content border-0 shadow">
                 <div class="modal-header border-bottom-0 bg-danger text-white">
                     <h5 class="modal-title" id="deleteModalLabel">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Deletion
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Xác nhận Xoá
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center py-4">
                     <i class="bi bi-trash text-danger display-1 mb-3"></i>
-                    <h5 class="mb-3">Are you sure?</h5>
-                    <p class="text-muted mb-0">You are about to delete <strong id="deleteItemName" class="text-dark">this item</strong>.</p>
-                    <p class="text-muted">This action cannot be undone.</p>
+                    <h5 class="mb-3">Bạn có chắc chắn không?</h5>
+                    <p class="text-muted mb-0">Bạn chuẩn bị xoá <strong id="deleteItemName" class="text-dark">mục này</strong>.</p>
+                    <p class="text-muted">Thao tác này không thể hoàn tác.</p>
                 </div>
                 <div class="modal-footer border-top-0 justify-content-center">
-                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Huỷ</button>
                     <form id="deleteForm" method="get" class="d-inline">
-                        <button type="submit" class="btn btn-danger px-4">Delete</button>
+                        <button type="submit" class="btn btn-danger px-4">Xoá</button>
                     </form>
                 </div>
             </div>
@@ -101,18 +101,18 @@
      ============================================ -->
 <div th:fragment="pagination(pageData, baseUrl)" th:if="${pageData != null and pageData.totalPages > 1}" class="d-flex justify-content-between align-items-center mt-4">
     <div class="text-muted small">
-        Showing <span th:text="${pageData.number * pageData.size + 1}"></span>
-        to <span th:text="${(pageData.number + 1) * pageData.size < pageData.totalElements ? (pageData.number + 1) * pageData.size : pageData.totalElements}"></span>
-        of <span th:text="${pageData.totalElements}"></span> entries
+        Hiển thị <span th:text="${pageData.number * pageData.size + 1}"></span>
+        đến <span th:text="${(pageData.number + 1) * pageData.size < pageData.totalElements ? (pageData.number + 1) * pageData.size : pageData.totalElements}"></span>
+        trong tổng số <span th:text="${pageData.totalElements}"></span> mục
     </div>
     <nav aria-label="Page navigation">
         <ul class="pagination pagination-sm mb-0 shadow-sm">
             <!-- First / Previous -->
             <li class="page-item" th:classappend="${pageData.first} ? 'disabled'">
-                <a class="page-link" th:href="@{${baseUrl}(page=0, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" title="First"><i class="bi bi-chevron-double-left"></i></a>
+                <a class="page-link" th:href="@{${baseUrl}(page=0, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" title="Trang đầu"><i class="bi bi-chevron-double-left"></i></a>
             </li>
             <li class="page-item" th:classappend="${pageData.first} ? 'disabled'">
-                <a class="page-link" th:href="@{${baseUrl}(page=${pageData.number - 1}, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" title="Previous"><i class="bi bi-chevron-left"></i></a>
+                <a class="page-link" th:href="@{${baseUrl}(page=${pageData.number - 1}, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" title="Trang trước"><i class="bi bi-chevron-left"></i></a>
             </li>
             
             <!-- Page numbers -->
@@ -124,10 +124,10 @@
             
             <!-- Next / Last -->
             <li class="page-item" th:classappend="${pageData.last} ? 'disabled'">
-                <a class="page-link" th:href="@{${baseUrl}(page=${pageData.number + 1}, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" title="Next"><i class="bi bi-chevron-right"></i></a>
+                <a class="page-link" th:href="@{${baseUrl}(page=${pageData.number + 1}, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" title="Trang tiếp"><i class="bi bi-chevron-right"></i></a>
             </li>
             <li class="page-item" th:classappend="${pageData.last} ? 'disabled'">
-                <a class="page-link" th:href="@{${baseUrl}(page=${pageData.totalPages - 1}, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" title="Last"><i class="bi bi-chevron-double-right"></i></a>
+                <a class="page-link" th:href="@{${baseUrl}(page=${pageData.totalPages - 1}, size=${pageData.size}, sort=${param.sort}, keyword=${param.keyword})}" title="Trang cuối"><i class="bi bi-chevron-double-right"></i></a>
             </li>
         </ul>
     </nav>
@@ -140,9 +140,9 @@
 <div th:fragment="breadcrumb(parent, current)">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb bg-transparent p-0 mb-3">
-            <li class="breadcrumb-item"><a th:href="@{/dashboard}" class="text-decoration-none text-muted"><i class="bi bi-house-door"></i> Home</a></li>
-            <li class="breadcrumb-item" th:if="${parent}"><a href="#" class="text-decoration-none text-muted" th:text="${parent}">Parent</a></li>
-            <li class="breadcrumb-item active text-primary fw-semibold" aria-current="page" th:text="${current}">Current</li>
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}" class="text-decoration-none text-muted"><i class="bi bi-house-door"></i> Trang chủ</a></li>
+            <li class="breadcrumb-item" th:if="${parent}"><a href="#" class="text-decoration-none text-muted" th:text="${parent}">Mục cha</a></li>
+            <li class="breadcrumb-item active text-primary fw-semibold" aria-current="page" th:text="${current}">Hiện tại</li>
         </ol>
     </nav>
 </div>
@@ -176,37 +176,37 @@
     </div>
     <div class="sidebar-menu p-3 overflow-auto" style="height: calc(100vh - 150px);">
         <ul class="nav flex-column gap-1">
-            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-2 px-3" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">Main</li>
+            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-2 px-3" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">Chính</li>
             <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
                 <a th:href="@{/dashboard}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'dashboard'} ? 'active bg-primary'">
-                    <i class="bi bi-speedometer2 me-3 fs-5"></i> Dashboard
+                    <i class="bi bi-speedometer2 me-3 fs-5"></i> Bảng điều khiển
                 </a>
             </li>
-            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-4 px-3">Management</li>
+            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-4 px-3">Quản lý</li>
             <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
                 <a th:href="@{/plants}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'plants'} ? 'active bg-primary'">
-                    <i class="bi bi-flower1 me-3 fs-5"></i> Plants
+                    <i class="bi bi-flower1 me-3 fs-5"></i> Thực vật
                 </a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
                 <a th:href="@{/pollens}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'pollens'} ? 'active bg-primary'">
-                    <i class="bi bi-flower2 me-3 fs-5"></i> Pollens
+                    <i class="bi bi-flower2 me-3 fs-5"></i> Phấn hoa
                 </a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
                 <a th:href="@{/colonies}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'colonies'} ? 'active bg-primary'">
-                    <i class="bi bi-grid-3x3-gap-fill me-3 fs-5"></i> Bee Colonies
+                    <i class="bi bi-grid-3x3-gap-fill me-3 fs-5"></i> Bầy ong
                 </a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
                 <a th:href="@{/collections}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'collections'} ? 'active bg-primary'">
-                    <i class="bi bi-clipboard-data me-3 fs-5"></i> Collection Tracking
+                    <i class="bi bi-clipboard-data me-3 fs-5"></i> Nhật ký thu hoạch
                 </a>
             </li>
-            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-4 px-3" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">AI & Support</li>
+            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-4 px-3" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">AI & Hỗ trợ</li>
             <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
                 <a th:href="@{/ai-assistant}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'ai-assistant'} ? 'active bg-primary'">
-                    <i class="bi bi-robot me-3 fs-5 text-warning"></i> AI Assistant
+                    <i class="bi bi-robot me-3 fs-5 text-warning"></i> Trợ lý AI
                 </a>
             </li>
         </ul>
@@ -235,12 +235,12 @@
                     <img class="img-profile rounded-circle border" th:src="@{https://api.dicebear.com/8.x/initials/svg(seed=${#authentication.name})}" width="40" height="40" alt="Profile">
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
-                    <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2 text-muted"></i>My Profile</a></li>
+                    <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2 text-muted"></i>Hồ sơ của tôi</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <form th:action="@{/logout}" method="post">
                             <button type="submit" class="dropdown-item text-danger">
-                                <i class="bi bi-box-arrow-right me-2"></i>Sign out
+                                <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
                             </button>
                         </form>
                     </li>

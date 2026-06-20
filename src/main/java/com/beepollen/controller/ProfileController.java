@@ -52,26 +52,26 @@ public class ProfileController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.passwordChangeRequest", bindingResult);
             redirectAttributes.addFlashAttribute("passwordChangeRequest", request);
-            redirectAttributes.addFlashAttribute("errorMessage", "Please correct the errors in the password form.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng sửa các lỗi trong form mật khẩu.");
             return "redirect:/profile";
         }
 
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             redirectAttributes.addFlashAttribute("passwordChangeRequest", request);
-            redirectAttributes.addFlashAttribute("errorMessage", "New password and confirm password do not match.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
             return "redirect:/profile";
         }
 
         try {
             userService.changePassword(authentication.getName(), request.getCurrentPassword(), request.getNewPassword());
-            redirectAttributes.addFlashAttribute("successMessage", "Password changed successfully.");
+            redirectAttributes.addFlashAttribute("successMessage", "Đổi mật khẩu thành công.");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("passwordChangeRequest", request);
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
             log.error("Error changing password", e);
             redirectAttributes.addFlashAttribute("passwordChangeRequest", request);
-            redirectAttributes.addFlashAttribute("errorMessage", "An error occurred while changing the password.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã có lỗi xảy ra trong quá trình đổi mật khẩu.");
         }
 
         return "redirect:/profile";

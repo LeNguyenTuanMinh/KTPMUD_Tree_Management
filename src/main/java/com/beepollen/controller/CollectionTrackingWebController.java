@@ -88,7 +88,7 @@ public class CollectionTrackingWebController {
         }
 
         collectionTrackingService.createTracking(request);
-        redirectAttributes.addFlashAttribute("successMessage", "Collection tracking created successfully.");
+        redirectAttributes.addFlashAttribute("successMessage", "Thêm nhật ký thu hoạch thành công.");
         return "redirect:/collections";
     }
 
@@ -132,7 +132,7 @@ public class CollectionTrackingWebController {
         }
 
         collectionTrackingService.updateTracking(id, request);
-        redirectAttributes.addFlashAttribute("successMessage", "Collection tracking updated successfully.");
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật nhật ký thu hoạch thành công.");
         return "redirect:/collections";
     }
 
@@ -153,7 +153,7 @@ public class CollectionTrackingWebController {
     @GetMapping("/{id}/delete")
     public String deleteCollection(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         collectionTrackingService.deleteTracking(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Collection tracking deleted successfully.");
+        redirectAttributes.addFlashAttribute("successMessage", "Xoá nhật ký thu hoạch thành công.");
         return "redirect:/collections";
     }
 

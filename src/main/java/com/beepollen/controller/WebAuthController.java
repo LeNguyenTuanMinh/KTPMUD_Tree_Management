@@ -79,8 +79,7 @@ public class WebAuthController {
 
         try {
             authService.register(registerRequest);
-            redirectAttributes.addFlashAttribute("successMessage",
-                    "Registration successful! Please log in.");
+            redirectAttributes.addFlashAttribute("successMessage", "Đăng ký thành công! Vui lòng đăng nhập.");
             log.info("New user '{}' registered via web form", registerRequest.getUsername());
             return "redirect:/login?registered";
         } catch (DuplicateResourceException ex) {

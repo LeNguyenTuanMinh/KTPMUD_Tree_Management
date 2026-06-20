@@ -12,12 +12,12 @@ import lombok.Data;
 @Data
 public class BeeColonyRequest {
 
-    @NotBlank(message = "Colony code is required")
-    @Size(max = 50, message = "Colony code must not exceed 50 characters")
+    @NotBlank(message = "Mã bầy ong bắt buộc nhập")
+    @Size(max = 50, message = "Mã bầy ong không được vượt quá 50 ký tự")
     private String colonyCode;
 
-    @NotBlank(message = "Bee species is required")
-    @Size(max = 100, message = "Bee species must not exceed 100 characters")
+    @NotBlank(message = "Tên giống ong bắt buộc nhập")
+    @Size(max = 100, message = "Tên giống ong không được vượt quá 100 ký tự")
     private String beeSpecies;
 
     private Double latitude;
@@ -26,6 +26,6 @@ public class BeeColonyRequest {
 
     private String healthStatus = "HEALTHY";
 
-    @Min(value = 0, message = "Estimated population must be zero or positive")
+    @Min(value = 0, message = "Số lượng cá thể dự kiến phải lớn hơn hoặc bằng 0")
     private Integer estimatedPopulation;
 }

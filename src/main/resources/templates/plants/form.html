@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/main}">
 <head>
-    <title th:text="${plantId != null ? 'Edit Plant' : 'Add Plant'}">Plant Form</title>
+    <title th:text="${plantId != null ? 'Sửa Thực vật' : 'Thêm Thực vật'}">Biểu mẫu Thực vật</title>
 </head>
 <body>
 
@@ -14,16 +14,16 @@
         <div>
             <h2>
                 <i class="bi bi-flower1 text-honey me-2"></i>
-                <span th:text="${plantId != null ? 'Edit Plant' : 'Add Plant'}">Add Plant</span>
+                <span th:text="${plantId != null ? 'Sửa Thực vật' : 'Thêm Thực vật'}">Thêm Thực vật</span>
             </h2>
             <p class="text-muted mb-0"
-               th:text="${plantId != null ? 'Update plant information' : 'Add a new plant to the system'}">
-                Manage plant data
+               th:text="${plantId != null ? 'Cập nhật thông tin thực vật' : 'Thêm thực vật mới vào hệ thống'}">
+                Quản lý dữ liệu thực vật
             </p>
         </div>
         <div>
             <a th:href="@{/plants}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i> Back to Plants
+                <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
             </a>
         </div>
     </div>
@@ -43,30 +43,30 @@
                             <!-- Common Name -->
                             <div class="col-md-6 mb-3">
                                 <label for="commonName" class="form-label">
-                                    Common Name <span class="text-danger">*</span>
+                                    Tên thường gọi <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control"
                                        th:classappend="${#fields.hasErrors('commonName')} ? 'is-invalid'"
                                        id="commonName" th:field="*{commonName}"
-                                       placeholder="e.g., Sunflower" required>
+                                       placeholder="Ví dụ: Hoa hướng dương" required>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('commonName')}"
                                      th:errors="*{commonName}">
-                                    Common name is required
+                                    Tên thường gọi bắt buộc nhập
                                 </div>
                             </div>
 
                             <!-- Scientific Name -->
                             <div class="col-md-6 mb-3">
                                 <label for="scientificName" class="form-label">
-                                    Scientific Name <span class="text-danger">*</span>
+                                    Tên khoa học <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control"
                                        th:classappend="${#fields.hasErrors('scientificName')} ? 'is-invalid'"
                                        id="scientificName" th:field="*{scientificName}"
-                                       placeholder="e.g., Helianthus annuus" required>
+                                       placeholder="Ví dụ: Helianthus annuus" required>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('scientificName')}"
                                      th:errors="*{scientificName}">
-                                    Scientific name is required
+                                    Tên khoa học bắt buộc nhập
                                 </div>
                             </div>
                         </div>
@@ -75,28 +75,28 @@
                             <!-- Family -->
                             <div class="col-md-6 mb-3">
                                 <label for="family" class="form-label">
-                                    Family <span class="text-danger">*</span>
+                                    Họ <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control"
                                        th:classappend="${#fields.hasErrors('family')} ? 'is-invalid'"
                                        id="family" th:field="*{family}"
-                                       placeholder="e.g., Asteraceae" required>
+                                       placeholder="Ví dụ: Asteraceae" required>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('family')}"
                                      th:errors="*{family}">
-                                    Family is required
+                                    Họ bắt buộc nhập
                                 </div>
                             </div>
 
                             <!-- Genus -->
                             <div class="col-md-6 mb-3">
-                                <label for="genus" class="form-label">Genus</label>
+                                <label for="genus" class="form-label">Chi</label>
                                 <input type="text" class="form-control"
                                        th:classappend="${#fields.hasErrors('genus')} ? 'is-invalid'"
                                        id="genus" th:field="*{genus}"
-                                       placeholder="e.g., Helianthus">
+                                       placeholder="Ví dụ: Helianthus">
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('genus')}"
                                      th:errors="*{genus}">
-                                    Invalid genus
+                                    Chi không hợp lệ
                                 </div>
                             </div>
                         </div>
@@ -105,56 +105,56 @@
                             <!-- Flowering Season -->
                             <div class="col-md-6 mb-3">
                                 <label for="floweringSeason" class="form-label">
-                                    Flowering Season <span class="text-danger">*</span>
+                                    Mùa hoa <span class="text-danger">*</span>
                                 </label>
                                 <select class="form-select"
                                         th:classappend="${#fields.hasErrors('floweringSeason')} ? 'is-invalid'"
                                         id="floweringSeason" th:field="*{floweringSeason}" required>
-                                    <option value="">-- Select Season --</option>
-                                    <option value="Spring">Spring</option>
-                                    <option value="Summer">Summer</option>
-                                    <option value="Autumn">Autumn</option>
-                                    <option value="Winter">Winter</option>
-                                    <option value="Year-round">Year-round</option>
+                                    <option value="">-- Chọn mùa --</option>
+                                    <option value="Spring">Mùa xuân</option>
+                                    <option value="Summer">Mùa hạ</option>
+                                    <option value="Autumn">Mùa thu</option>
+                                    <option value="Winter">Mùa đông</option>
+                                    <option value="Year-round">Quanh năm</option>
                                 </select>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('floweringSeason')}"
                                      th:errors="*{floweringSeason}">
-                                    Flowering season is required
+                                    Mùa hoa bắt buộc chọn
                                 </div>
                             </div>
 
                             <!-- Region -->
                             <div class="col-md-6 mb-3">
                                 <label for="region" class="form-label">
-                                    Region <span class="text-danger">*</span>
+                                    Khu vực <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control"
                                        th:classappend="${#fields.hasErrors('region')} ? 'is-invalid'"
                                        id="region" th:field="*{region}"
-                                       placeholder="e.g., Southeast Asia" required>
+                                       placeholder="Ví dụ: Đông Nam Á" required>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('region')}"
                                      th:errors="*{region}">
-                                    Region is required
+                                    Khu vực bắt buộc nhập
                                 </div>
                             </div>
                         </div>
 
                         <!-- Description -->
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
+                            <label for="description" class="form-label">Mô tả chi tiết</label>
                             <textarea class="form-control"
                                       th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
                                       id="description" th:field="*{description}" rows="4"
-                                      placeholder="Enter a detailed description of the plant..."></textarea>
+                                      placeholder="Nhập mô tả chi tiết về thực vật..."></textarea>
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}"
                                  th:errors="*{description}">
-                                Invalid description
+                                Mô tả không hợp lệ
                             </div>
                         </div>
 
                         <!-- Image URL -->
                         <div class="mb-3">
-                            <label for="imageUrl" class="form-label">Image URL</label>
+                            <label for="imageUrl" class="form-label">Đường dẫn Hình ảnh</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-image"></i></span>
                                 <input type="url" class="form-control"
@@ -163,15 +163,15 @@
                                        placeholder="https://example.com/plant-image.jpg">
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('imageUrl')}"
                                      th:errors="*{imageUrl}">
-                                    Invalid URL format
+                                    Định dạng URL không hợp lệ
                                 </div>
                             </div>
-                            <div class="form-text">Provide a URL to an image of the plant (optional)</div>
+                            <div class="form-text">Cung cấp đường dẫn đến hình ảnh của thực vật (tuỳ chọn)</div>
                         </div>
 
                         <!-- Pollen Associations -->
                         <div class="mb-4" th:if="${allPollens != null and !allPollens.isEmpty()}">
-                            <label class="form-label">Associated Pollens</label>
+                            <label class="form-label">Phấn hoa liên kết</label>
                             <div class="card bg-light border-0">
                                 <div class="card-body" style="max-height: 200px; overflow-y: auto;">
                                     <div class="row">
@@ -185,24 +185,24 @@
                                                 <label class="form-check-label"
                                                        th:for="'pollen_' + ${pollen.id}"
                                                        th:text="${pollen.name}">
-                                                    Pollen Name
+                                                    Tên Phấn hoa
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-text">Select the pollens associated with this plant</div>
+                            <div class="form-text">Chọn phấn hoa liên kết với thực vật này</div>
                         </div>
 
                         <!-- Form Actions -->
                         <div class="d-flex justify-content-end gap-2 pt-3 border-top">
                             <a th:href="@{/plants}" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-lg me-1"></i> Cancel
+                                <i class="bi bi-x-lg me-1"></i> Huỷ
                             </a>
                             <button type="submit" class="btn btn-honey">
                                 <i class="bi bi-check-lg me-1"></i>
-                                <span th:text="${plantId != null ? 'Update Plant' : 'Create Plant'}">Save</span>
+                                <span th:text="${plantId != null ? 'Cập nhật Thực vật' : 'Lưu Thực vật'}">Lưu</span>
                             </button>
                         </div>
                     </form>

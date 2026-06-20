@@ -14,17 +14,17 @@ import java.time.LocalDate;
 @Data
 public class CollectionTrackingRequest {
 
-    @NotNull(message = "Colony is required")
+    @NotNull(message = "Bầy ong bắt buộc nhập")
     private Long colonyId;
 
-    @NotNull(message = "Pollen is required")
+    @NotNull(message = "Phấn hoa bắt buộc nhập")
     private Long pollenId;
 
-    @NotNull(message = "Weight is required")
-    @Positive(message = "Weight must be greater than 0")
+    @NotNull(message = "Sản lượng bắt buộc nhập")
+    @Positive(message = "Sản lượng phải lớn hơn 0")
     private Double collectedWeight;
 
-    @NotNull(message = "Collection date is required")
+    @NotNull(message = "Ngày thu hoạch bắt buộc nhập")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate collectionDate;
 

@@ -73,7 +73,7 @@ public class BeeColonyWebController {
         }
         try {
             beeColonyService.createColony(request);
-            redirectAttributes.addFlashAttribute("successMessage", "Colony created successfully!");
+            redirectAttributes.addFlashAttribute("successMessage", "Thêm bầy ong thành công!");
         } catch (DuplicateResourceException e) {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("healthStatuses", HealthStatus.values());
@@ -122,7 +122,7 @@ public class BeeColonyWebController {
         }
         try {
             beeColonyService.updateColony(id, request);
-            redirectAttributes.addFlashAttribute("successMessage", "Colony updated successfully!");
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật bầy ong thành công!");
         } catch (DuplicateResourceException e) {
             model.addAttribute("colonyId", id);
             model.addAttribute("errorMessage", e.getMessage());
@@ -149,7 +149,7 @@ public class BeeColonyWebController {
     @GetMapping("/{id}/delete")
     public String deleteColony(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         beeColonyService.deleteColony(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Colony deleted successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Xoá bầy ong thành công!");
         return "redirect:/colonies";
     }
 }

@@ -111,7 +111,7 @@ public class PlantWebController {
         }
 
         plantService.createPlant(request);
-        redirectAttributes.addFlashAttribute("successMessage", "Plant created successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Thêm mới thực vật thành công!");
         return "redirect:/plants";
     }
 
@@ -183,7 +183,7 @@ public class PlantWebController {
         }
 
         plantService.updatePlant(id, request);
-        redirectAttributes.addFlashAttribute("successMessage", "Plant updated successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thực vật thành công!");
         return "redirect:/plants";
     }
 
@@ -220,7 +220,7 @@ public class PlantWebController {
             RedirectAttributes redirectAttributes) {
         log.debug("WEB: Deleting plant with id: {}", id);
         plantService.deletePlant(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Plant deleted successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Xoá thực vật thành công!");
         return "redirect:/plants";
     }
 

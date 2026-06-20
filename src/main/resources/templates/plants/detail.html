@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/main}">
 <head>
-    <title th:text="${plant.commonName} + ' - Detail'">Plant Detail</title>
+    <title th:text="${plant.commonName} + ' - Chi tiết'">Chi tiết Thực vật</title>
 </head>
 <body>
 
@@ -22,18 +22,18 @@
         </div>
         <div class="d-flex gap-2">
             <a th:href="@{/plants}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i> Back to Plants
+                <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
             </a>
             <a sec:authorize="hasAnyRole('ADMIN', 'RESEARCHER')"
                th:href="@{/plants/{id}/edit(id=${plant.id})}" class="btn btn-outline-warning">
-                <i class="bi bi-pencil me-1"></i> Edit
+                <i class="bi bi-pencil me-1"></i> Sửa
             </a>
             <button sec:authorize="hasAnyRole('ADMIN', 'RESEARCHER')"
                     type="button" class="btn btn-outline-danger"
                     data-bs-toggle="modal" data-bs-target="#deleteModal"
                     th:data-delete-url="@{/plants/{id}/delete(id=${plant.id})}"
                     th:data-delete-name="${plant.commonName}">
-                <i class="bi bi-trash me-1"></i> Delete
+                <i class="bi bi-trash me-1"></i> Xoá
             </button>
         </div>
     </div>
@@ -54,42 +54,42 @@
                 <div th:if="${#strings.isEmpty(plant.imageUrl)}"
                      class="text-center py-5 bg-light border-bottom">
                     <i class="bi bi-image text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
-                    <p class="text-muted mt-2 mb-0">No image available</p>
+                    <p class="text-muted mt-2 mb-0">Không có hình ảnh</p>
                 </div>
 
                 <!-- Details Body -->
                 <div class="card-body p-4">
                     <dl class="row mb-0">
                         <div class="col-md-6 mb-3">
-                            <dt class="text-muted small text-uppercase fw-bold">Common Name</dt>
+                            <dt class="text-muted small text-uppercase fw-bold">Tên thường gọi</dt>
                             <dd class="fs-5 mb-0" th:text="${plant.commonName}">Rose</dd>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <dt class="text-muted small text-uppercase fw-bold">Scientific Name</dt>
+                            <dt class="text-muted small text-uppercase fw-bold">Tên khoa học</dt>
                             <dd class="fs-5 mb-0">
                                 <em th:text="${plant.scientificName}">Rosa spp.</em>
                             </dd>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <dt class="text-muted small text-uppercase fw-bold">Family</dt>
+                            <dt class="text-muted small text-uppercase fw-bold">Họ</dt>
                             <dd class="fs-6 mb-0" th:text="${plant.family}">Rosaceae</dd>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <dt class="text-muted small text-uppercase fw-bold">Genus</dt>
+                            <dt class="text-muted small text-uppercase fw-bold">Chi</dt>
                             <dd class="fs-6 mb-0" th:text="${plant.genus ?: 'N/A'}">Rosa</dd>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <dt class="text-muted small text-uppercase fw-bold">Flowering Season</dt>
+                            <dt class="text-muted small text-uppercase fw-bold">Mùa hoa</dt>
                             <dd class="fs-6 mb-0">
                                 <span class="badge bg-primary bg-opacity-75" th:text="${plant.floweringSeason}">Spring</span>
                             </dd>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <dt class="text-muted small text-uppercase fw-bold">Region</dt>
+                            <dt class="text-muted small text-uppercase fw-bold">Khu vực</dt>
                             <dd class="fs-6 mb-0" th:text="${plant.region}">Southeast Asia</dd>
                         </div>
                         <div class="col-12 mt-3" th:if="${!#strings.isEmpty(plant.description)}">
-                            <dt class="text-muted small text-uppercase fw-bold mb-2">Description</dt>
+                            <dt class="text-muted small text-uppercase fw-bold mb-2">Mô tả chi tiết</dt>
                             <dd class="bg-light p-3 rounded text-muted" th:text="${plant.description}">
                                 Plant description goes here.
                             </dd>
@@ -104,7 +104,7 @@
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-white py-3">
                     <h6 class="m-0 fw-bold text-dark">
-                        <i class="bi bi-circle-fill text-honey me-2"></i>Associated Pollens
+                        <i class="bi bi-circle-fill text-honey me-2"></i>Phấn hoa liên kết
                     </h6>
                 </div>
                 <div class="card-body">
@@ -132,7 +132,7 @@
                     <div th:if="${#lists.isEmpty(plant.pollens)}"
                          class="text-center py-4">
                         <i class="bi bi-circle text-muted d-block" style="font-size: 2.5rem; opacity: 0.3;"></i>
-                        <p class="text-muted mb-0 mt-2">No pollens associated</p>
+                        <p class="text-muted mb-0 mt-2">Không có phấn hoa liên kết</p>
                     </div>
                 </div>
             </div>
@@ -141,20 +141,20 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3">
                     <h6 class="m-0 fw-bold text-dark">
-                        <i class="bi bi-info-circle text-primary me-2"></i>Record Info
+                        <i class="bi bi-info-circle text-primary me-2"></i>Thông tin Bản ghi
                     </h6>
                 </div>
                 <div class="card-body">
                     <dl class="mb-0">
-                        <dt class="text-muted small fw-bold">Record ID</dt>
+                        <dt class="text-muted small fw-bold">Mã Bản ghi</dt>
                         <dd th:text="${plant.id}">1</dd>
                         
-                        <dt class="text-muted small fw-bold mt-2">Created At</dt>
+                        <dt class="text-muted small fw-bold mt-2">Ngày tạo</dt>
                         <dd th:text="${plant.createdAt != null ? #temporals.format(plant.createdAt, 'dd MMM yyyy, HH:mm') : 'N/A'}">
                             01 Jan 2024, 10:00
                         </dd>
                         
-                        <dt class="text-muted small fw-bold mt-2">Last Updated</dt>
+                        <dt class="text-muted small fw-bold mt-2">Cập nhật lần cuối</dt>
                         <dd class="mb-0" th:text="${plant.updatedAt != null ? #temporals.format(plant.updatedAt, 'dd MMM yyyy, HH:mm') : 'N/A'}">
                             01 Jan 2024, 12:00
                         </dd>

@@ -15,19 +15,19 @@ import lombok.Data;
 @Data
 public class RegisterRequest {
 
-    @NotBlank(message = "Username is required")
-    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    @NotBlank(message = "Tên đăng nhập bắt buộc nhập")
+    @Size(min = 3, max = 50, message = "Tên đăng nhập phải từ 3 đến 50 ký tự")
     private String username;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
+    @NotBlank(message = "Mật khẩu bắt buộc nhập")
+    @Size(min = 6, max = 100, message = "Mật khẩu phải từ 6 đến 100 ký tự")
     private String password;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Please provide a valid email address")
+    @NotBlank(message = "Email bắt buộc nhập")
+    @Email(message = "Vui lòng nhập địa chỉ email hợp lệ")
     private String email;
 
-    @NotBlank(message = "Full name is required")
+    @NotBlank(message = "Họ và tên bắt buộc nhập")
     private String fullName;
 
     /**

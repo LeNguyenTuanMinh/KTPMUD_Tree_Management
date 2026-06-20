@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/main}">
 <head>
-    <title th:text="${pollenId != null ? 'Edit Pollen' : 'Add Pollen'}">Pollen Form</title>
+    <title th:text="${pollenId != null ? 'Sửa Phấn hoa' : 'Thêm Phấn hoa'}">Biểu mẫu Phấn hoa</title>
 </head>
 <body>
 
@@ -14,14 +14,14 @@
         <div>
             <h2>
                 <i class="bi bi-flower2 text-success me-2"></i>
-                <span th:if="${pollenId == null}">Add New Pollen</span>
-                <span th:if="${pollenId != null}">Edit Pollen</span>
+                <span th:if="${pollenId == null}">Thêm Phấn hoa mới</span>
+                <span th:if="${pollenId != null}">Sửa Phấn hoa</span>
             </h2>
-            <p class="text-muted mb-0">Manage pollen details</p>
+            <p class="text-muted mb-0">Quản lý chi tiết phấn hoa</p>
         </div>
         <div>
             <a th:href="@{/pollens}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i>Back to List
+                <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách
             </a>
         </div>
     </div>
@@ -37,69 +37,69 @@
                         <!-- Name Field -->
                         <div class="mb-3">
                             <label for="name" class="form-label">
-                                Pollen Name <span class="text-danger">*</span>
+                                Tên Phấn hoa <span class="text-danger">*</span>
                             </label>
                             <input type="text" id="name" class="form-control"
                                    th:field="*{name}"
                                    th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"
-                                   placeholder="Enter pollen name">
+                                   placeholder="Nhập tên phấn hoa">
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                         </div>
 
                         <div class="row">
                             <!-- Shape Field -->
                             <div class="col-md-6 mb-3">
-                                <label for="shape" class="form-label">Shape</label>
+                                <label for="shape" class="form-label">Hình dạng</label>
                                 <select id="shape" class="form-select"
                                         th:field="*{shape}"
                                         th:classappend="${#fields.hasErrors('shape')} ? 'is-invalid'">
-                                    <option value="">-- Select Shape --</option>
-                                    <option value="Spherical">Spherical</option>
-                                    <option value="Oblate">Oblate</option>
-                                    <option value="Prolate">Prolate</option>
-                                    <option value="Elliptical">Elliptical</option>
-                                    <option value="Triangular">Triangular</option>
-                                    <option value="Irregular">Irregular</option>
+                                    <option value="">-- Chọn Hình dạng --</option>
+                                    <option value="Spherical">Hình cầu</option>
+                                    <option value="Oblate">Hình dẹt</option>
+                                    <option value="Prolate">Hình thuôn</option>
+                                    <option value="Elliptical">Hình elip</option>
+                                    <option value="Triangular">Hình tam giác</option>
+                                    <option value="Irregular">Không đều</option>
                                 </select>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('shape')}" th:errors="*{shape}"></div>
                             </div>
 
                             <!-- Size Field -->
                             <div class="col-md-6 mb-3">
-                                <label for="sizeMicron" class="form-label">Size (μm)</label>
+                                <label for="sizeMicron" class="form-label">Kích thước (μm)</label>
                                 <input type="number" id="sizeMicron" class="form-control"
                                        th:field="*{sizeMicron}"
                                        step="0.01" min="0"
-                                       placeholder="Enter size in microns">
+                                       placeholder="Nhập kích thước tính bằng micron">
                             </div>
                         </div>
 
                         <!-- Surface Characteristic Field -->
                         <div class="mb-3">
-                            <label for="surfaceCharacteristic" class="form-label">Surface Characteristic</label>
+                            <label for="surfaceCharacteristic" class="form-label">Đặc điểm bề mặt</label>
                             <textarea id="surfaceCharacteristic" class="form-control" rows="3"
                                       th:field="*{surfaceCharacteristic}"
                                       th:classappend="${#fields.hasErrors('surfaceCharacteristic')} ? 'is-invalid'"
-                                      placeholder="Describe the surface characteristic (e.g., smooth, echinate, reticulate)"></textarea>
+                                      placeholder="Mô tả đặc điểm bề mặt (ví dụ: nhẵn, gai, lưới)"></textarea>
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('surfaceCharacteristic')}"
                                  th:errors="*{surfaceCharacteristic}"></div>
                         </div>
 
                         <!-- Microscope Image Field -->
                         <div class="mb-3">
-                            <label for="microscopeImage" class="form-label">Microscope Image URL</label>
+                            <label for="microscopeImage" class="form-label">Đường dẫn Hình ảnh Kính hiển vi</label>
                             <input type="text" id="microscopeImage" class="form-control"
                                    th:field="*{microscopeImage}"
                                    th:classappend="${#fields.hasErrors('microscopeImage')} ? 'is-invalid'"
-                                   placeholder="Enter image URL or path">
+                                   placeholder="Nhập đường dẫn URL hoặc tệp hình ảnh">
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('microscopeImage')}"
                                  th:errors="*{microscopeImage}"></div>
-                            <div class="form-text">Provide a URL or file path to the microscope image.</div>
+                            <div class="form-text">Cung cấp đường dẫn URL hoặc đường dẫn tệp đến hình ảnh kính hiển vi.</div>
                         </div>
 
                         <!-- Image Preview -->
                         <div class="mb-3" th:if="${pollen.microscopeImage != null and !pollen.microscopeImage.isEmpty()}">
-                            <label class="form-label">Image Preview</label>
+                            <label class="form-label">Xem trước hình ảnh</label>
                             <div>
                                 <img th:src="${pollen.microscopeImage}" alt="Microscope Image Preview"
                                      class="img-thumbnail" style="max-height: 200px;"
@@ -109,7 +109,7 @@
 
                         <!-- Plant Associations -->
                         <div class="mb-4">
-                            <label class="form-label">Associated Plants</label>
+                            <label class="form-label">Thực vật liên kết</label>
                             <div class="card bg-light border-0">
                                 <div class="card-body" style="max-height: 300px; overflow-y: auto;">
                                     <div th:if="${allPlants != null and !allPlants.isEmpty()}">
@@ -124,22 +124,22 @@
                                         </div>
                                     </div>
                                     <div th:if="${allPlants == null or allPlants.isEmpty()}" class="text-muted">
-                                        <i class="bi bi-info-circle me-1"></i>No plants available. Add plants first.
+                                        <i class="bi bi-info-circle me-1"></i>Không có thực vật. Hãy thêm thực vật trước.
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-text">Select one or more plants to associate with this pollen.</div>
+                            <div class="form-text">Chọn một hoặc nhiều thực vật để liên kết với phấn hoa này.</div>
                         </div>
 
                         <!-- Form Buttons -->
                         <div class="d-flex justify-content-end gap-2 pt-3 border-top">
                             <a th:href="@{/pollens}" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-lg me-1"></i> Cancel
+                                <i class="bi bi-x-lg me-1"></i> Huỷ
                             </a>
                             <button type="submit" class="btn btn-success">
                                 <i class="bi bi-check-lg me-1"></i>
-                                <span th:if="${pollenId != null}">Update Pollen</span>
-                                <span th:if="${pollenId == null}">Create Pollen</span>
+                                <span th:if="${pollenId != null}">Cập nhật Phấn hoa</span>
+                                <span th:if="${pollenId == null}">Lưu Phấn hoa</span>
                             </button>
                         </div>
                     </form>

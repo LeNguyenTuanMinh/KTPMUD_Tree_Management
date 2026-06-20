@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
         log.warn("Resource not found: {}", ex.getMessage());
 
         if (isApiRequest(request)) {
-            Map<String, Object> body = buildErrorBody(HttpStatus.NOT_FOUND, "Not Found", ex.getMessage(), request);
+            Map<String, Object> body = buildErrorBody(HttpStatus.NOT_FOUND, "Không tìm thấy", ex.getMessage(), request);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
         }
 
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
         log.warn("Duplicate resource: {}", ex.getMessage());
 
         if (isApiRequest(request)) {
-            Map<String, Object> body = buildErrorBody(HttpStatus.CONFLICT, "Conflict", ex.getMessage(), request);
+            Map<String, Object> body = buildErrorBody(HttpStatus.CONFLICT, "Xung đột dữ liệu", ex.getMessage(), request);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
         }
 
@@ -89,16 +89,16 @@ public class GlobalExceptionHandler {
         }
 
         if (isApiRequest(request)) {
-            Map<String, Object> body = buildErrorBody(HttpStatus.BAD_REQUEST, "Validation Failed",
-                    "One or more fields have invalid values", request);
+            Map<String, Object> body = buildErrorBody(HttpStatus.BAD_REQUEST, "Xác thực thất bại",
+                    "Một hoặc nhiều trường dữ liệu không hợp lệ", request);
             body.put("fieldErrors", fieldErrors);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
         }
 
         ModelAndView mav = new ModelAndView("error");
         mav.addObject("status", HttpStatus.BAD_REQUEST.value());
-        mav.addObject("error", "Validation Failed");
-        mav.addObject("message", "One or more fields have invalid values");
+        mav.addObject("error", "Xác thực thất bại");
+        mav.addObject("message", "Một hoặc nhiều trường dữ liệu không hợp lệ");
         mav.addObject("fieldErrors", fieldErrors);
         return mav;
     }
@@ -115,12 +115,12 @@ public class GlobalExceptionHandler {
         log.warn("Access denied: {}", ex.getMessage());
 
         if (isApiRequest(request)) {
-            Map<String, Object> body = buildErrorBody(HttpStatus.FORBIDDEN, "Forbidden",
-                    "You do not have permission to access this resource", request);
+            Map<String, Object> body = buildErrorBody(HttpStatus.FORBIDDEN, "Bị từ chối",
+                    "Bạn không có quyền truy cập tài nguyên này", request);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
         }
 
-        return buildErrorView(HttpStatus.FORBIDDEN, "You do not have permission to access this resource");
+        return buildErrorView(HttpStatus.FORBIDDEN, "Bạn không có quyền truy cập tài nguyên này");
     }
 
     // -----------------------------------------------------------------------
@@ -135,7 +135,7 @@ public class GlobalExceptionHandler {
         log.warn("File upload exceeded max size: {}", ex.getMessage());
 
         if (isApiRequest(request) || request.getRequestURI().startsWith("/ai-assistant")) {
-            Map<String, Object> body = buildErrorBody(HttpStatus.PAYLOAD_TOO_LARGE, "Payload Too Large",
+            Map<String, Object> body = buildErrorBody(HttpStatus.PAYLOAD_TOO_LARGE, "Dữ liệu quá lớn",
                     "File upload quá lớn! Vui lòng chọn file có kích thước dưới 5MB.", request);
             body.put("error", "File upload quá lớn! Vui lòng chọn file có kích thước dưới 5MB.");
             return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(body);
@@ -158,7 +158,7 @@ public class GlobalExceptionHandler {
 
         String message = "Không thể thực hiện thao tác này vì dữ liệu đang được liên kết ở một nơi khác (ví dụ: đang có lịch sử thu hoạch tham chiếu tới). Hãy xoá các dữ liệu liên quan trước.";
         if (isApiRequest(request)) {
-            Map<String, Object> body = buildErrorBody(HttpStatus.BAD_REQUEST, "Data Integrity Violation",
+            Map<String, Object> body = buildErrorBody(HttpStatus.BAD_REQUEST, "Lỗi toàn vẹn dữ liệu",
                     message, request);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
         }
@@ -188,12 +188,12 @@ public class GlobalExceptionHandler {
         }
 
         if (isApiRequest(request)) {
-            Map<String, Object> body = buildErrorBody(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error",
-                    "An unexpected error occurred. Please try again later.", request);
+            Map<String, Object> body = buildErrorBody(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi máy chủ nội bộ",
+                    "Đã có lỗi xảy ra. Vui lòng thử lại sau.", request);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
         }
 
-        return buildErrorView(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred. Please try again later.");
+        return buildErrorView(HttpStatus.INTERNAL_SERVER_ERROR, "Đã có lỗi xảy ra. Vui lòng thử lại sau.");
     }
 
     // -----------------------------------------------------------------------

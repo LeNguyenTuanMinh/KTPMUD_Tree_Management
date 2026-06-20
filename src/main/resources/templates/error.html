@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/main}">
 <head>
-    <title>Error - Bee Pollen Management</title>
+    <title>Lỗi - Bee Pollen Management</title>
 </head>
 <body th:with="activeMenu=''">
 
@@ -39,47 +39,47 @@
 
                     <!-- Error Title -->
                     <h3 class="mb-3 text-dark">
-                        <span th:if="${status == 404}">Page Not Found</span>
-                        <span th:if="${status == 403}">Access Denied</span>
-                        <span th:if="${status == 500}">Internal Server Error</span>
-                        <span th:if="${status != 404 and status != 403 and status != 500}">Something Went Wrong</span>
+                        <span th:if="${status == 404}">Không tìm thấy trang</span>
+                        <span th:if="${status == 403}">Từ chối truy cập</span>
+                        <span th:if="${status == 500}">Lỗi máy chủ nội bộ</span>
+                        <span th:if="${status != 404 and status != 403 and status != 500}">Đã có lỗi xảy ra</span>
                     </h3>
 
                     <!-- Error Message -->
                     <p class="text-muted mb-5 fs-5">
                         <span th:if="${status == 404}">
-                            The page you are looking for might have been removed, had its name changed,
-                            or is temporarily unavailable.
+                            Trang bạn đang tìm kiếm có thể đã bị xoá, đổi tên,
+                            hoặc tạm thời không khả dụng.
                         </span>
                         <span th:if="${status == 403}">
-                            You don't have permission to access this resource.
-                            Please contact your administrator if you believe this is a mistake.
+                            Bạn không có quyền truy cập tài nguyên này.
+                            Vui lòng liên hệ quản trị viên nếu bạn cho rằng đây là sự nhầm lẫn.
                         </span>
                         <span th:if="${status == 500}">
-                            An unexpected error occurred on the server. Our team has been notified.
-                            Please try again later.
+                            Đã xảy ra lỗi không mong muốn trên máy chủ. Nhóm của chúng tôi đã được thông báo.
+                            Vui lòng thử lại sau.
                         </span>
                         <span th:if="${status != 404 and status != 403 and status != 500}"
-                              th:text="${message ?: 'An unexpected error occurred. Please try again.'}">
-                            An unexpected error occurred.
+                              th:text="${message ?: 'Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.'}">
+                            Đã xảy ra lỗi không mong muốn.
                         </span>
                     </p>
 
                     <!-- Error Details (optional, for development) -->
                     <div th:if="${error}" class="alert alert-light text-start mb-4 shadow-sm" role="alert">
                         <small class="text-muted">
-                            <i class="bi bi-bug me-1"></i> <strong>Details:</strong>
-                            <span th:text="${error}">Error details</span>
+                            <i class="bi bi-bug me-1"></i> <strong>Chi tiết:</strong>
+                            <span th:text="${error}">Chi tiết lỗi</span>
                         </small>
                     </div>
 
                     <!-- Action Buttons -->
                     <div class="d-flex justify-content-center gap-3">
                         <a href="javascript:history.back()" class="btn btn-outline-secondary px-4 py-2">
-                            <i class="bi bi-arrow-left me-1"></i> Go Back
+                            <i class="bi bi-arrow-left me-1"></i> Quay lại
                         </a>
                         <a th:href="@{/dashboard}" class="btn btn-primary px-4 py-2">
-                            <i class="bi bi-house me-1"></i> Dashboard
+                            <i class="bi bi-house me-1"></i> Bảng điều khiển
                         </a>
                     </div>
                     

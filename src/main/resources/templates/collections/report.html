@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main}">
 <head>
-    <title>Harvest Batch Report</title>
+    <title>Báo cáo Tổng hợp Thu hoạch</title>
 </head>
 <body>
 
@@ -11,15 +11,15 @@
     <!-- Page Header -->
     <div class="page-header d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2><i class="bi bi-bar-chart-line text-primary me-2"></i> Harvest Batch Report</h2>
-            <p class="text-muted mb-0">Aggregate pollen collection tracking data</p>
+            <h2><i class="bi bi-bar-chart-line text-primary me-2"></i> Báo cáo Tổng hợp Thu hoạch</h2>
+            <p class="text-muted mb-0">Tổng hợp dữ liệu theo dõi thu hoạch phấn hoa</p>
         </div>
         <div>
             <a th:href="@{/collections/report/export/csv(fromDate=${fromDate},toDate=${toDate})}" class="btn btn-outline-success">
-                <i class="bi bi-download"></i> Export CSV
+                <i class="bi bi-download"></i> Xuất CSV
             </a>
             <a th:href="@{/collections}" class="btn btn-outline-secondary ms-2">
-                <i class="bi bi-arrow-left"></i> Back to Collections
+                <i class="bi bi-arrow-left"></i> Quay lại Thu hoạch
             </a>
         </div>
     </div>
@@ -29,11 +29,11 @@
         <div class="card-body">
             <form th:action="@{/collections/report}" method="get" class="row g-3 align-items-end">
                 <div class="col-md-4">
-                    <label for="fromDate" class="form-label fw-semibold">From Date</label>
+                    <label for="fromDate" class="form-label fw-semibold">Từ ngày</label>
                     <input type="date" class="form-control" id="fromDate" name="fromDate" th:value="${fromDate}" required>
                 </div>
                 <div class="col-md-4">
-                    <label for="toDate" class="form-label fw-semibold">To Date</label>
+                    <label for="toDate" class="form-label fw-semibold">Đến ngày</label>
                     <input type="date" class="form-control" id="toDate" name="toDate" th:value="${toDate}" required>
                 </div>
                 <div class="col-md-4">
@@ -49,8 +49,8 @@
     <div th:if="${reportData.totalRecords == 0}" class="card shadow-sm border-0 py-5 mb-4 text-center">
         <div class="card-body">
             <i class="bi bi-inbox display-4 text-muted mb-3 d-block"></i>
-            <h5>No Data Found</h5>
-            <p class="text-muted">No collection records found in the selected date range.</p>
+            <h5>Không tìm thấy dữ liệu</h5>
+            <p class="text-muted">Không tìm thấy hồ sơ thu hoạch nào trong khoảng thời gian đã chọn.</p>
         </div>
     </div>
 
@@ -60,7 +60,7 @@
             <div class="col-md-3">
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-body">
-                        <h6 class="text-muted text-uppercase mb-2">Total Weight</h6>
+                        <h6 class="text-muted text-uppercase mb-2">Tổng Khối lượng</h6>
                         <h3 class="mb-0 text-primary">
                             <span th:text="${#numbers.formatDecimal(reportData.totalWeightKg, 1, 2)}">0.00</span> kg
                         </h3>
@@ -70,7 +70,7 @@
             <div class="col-md-3">
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-body">
-                        <h6 class="text-muted text-uppercase mb-2">Total Records</h6>
+                        <h6 class="text-muted text-uppercase mb-2">Tổng số Bản ghi</h6>
                         <h3 class="mb-0 text-info" th:text="${reportData.totalRecords}">0</h3>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
             <div class="col-md-3">
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-body">
-                        <h6 class="text-muted text-uppercase mb-2">Top Colony</h6>
+                        <h6 class="text-muted text-uppercase mb-2">Đàn ong Tốt nhất</h6>
                         <h4 class="mb-1 text-warning" th:text="${reportData.topColonyCode}">Code</h4>
                         <small class="text-muted" th:text="${#numbers.formatDecimal(reportData.topColonyWeightKg, 1, 2) + ' kg'}">0.0 kg</small>
                     </div>
@@ -87,7 +87,7 @@
             <div class="col-md-3">
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-body">
-                        <h6 class="text-muted text-uppercase mb-2">Top Pollen</h6>
+                        <h6 class="text-muted text-uppercase mb-2">Phấn hoa Tốt nhất</h6>
                         <h4 class="mb-1 text-success" th:text="${reportData.topPollenName}">Name</h4>
                         <small class="text-muted" th:text="${#numbers.formatDecimal(reportData.topPollenWeightKg, 1, 2) + ' kg'}">0.0 kg</small>
                     </div>
@@ -100,18 +100,18 @@
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-header bg-white">
-                        <h5 class="mb-0"><i class="bi bi-house text-warning me-2"></i> By Colony</h5>
+                        <h5 class="mb-0"><i class="bi bi-house text-warning me-2"></i> Theo Đàn ong</h5>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <thead class="table-light">
                                 <tr>
-                                    <th>Colony Code</th>
-                                    <th>Location</th>
-                                    <th class="text-end">Weight (kg)</th>
-                                    <th class="text-end">Records</th>
-                                    <th class="text-end">% Total</th>
+                                    <th>Mã Đàn</th>
+                                    <th>Vị trí</th>
+                                    <th class="text-end">Khối lượng (kg)</th>
+                                    <th class="text-end">Số bản ghi</th>
+                                    <th class="text-end">% Tổng</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -135,17 +135,17 @@
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-header bg-white">
-                        <h5 class="mb-0"><i class="bi bi-flower2 text-success me-2"></i> By Pollen</h5>
+                        <h5 class="mb-0"><i class="bi bi-flower2 text-success me-2"></i> Theo Phấn hoa</h5>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <thead class="table-light">
                                 <tr>
-                                    <th>Pollen Name</th>
-                                    <th class="text-end">Weight (kg)</th>
-                                    <th class="text-end">Records</th>
-                                    <th class="text-end">% Total</th>
+                                    <th>Tên Phấn hoa</th>
+                                    <th class="text-end">Khối lượng (kg)</th>
+                                    <th class="text-end">Số bản ghi</th>
+                                    <th class="text-end">% Tổng</th>
                                 </tr>
                                 </thead>
                                 <tbody>

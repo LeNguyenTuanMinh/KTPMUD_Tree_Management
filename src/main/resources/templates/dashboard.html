@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/main}">
 <head>
-    <title>Dashboard</title>
+    <title>Bảng điều khiển - Bee Pollen Management</title>
 </head>
 <body>
 
@@ -12,14 +12,14 @@
     <!-- Page Header -->
     <div class="page-header d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2><i class="bi bi-speedometer2 text-warning me-2"></i> Dashboard</h2>
-            <span class="text-muted">Welcome back! Here's what's happening with your bee pollen data.</span>
+            <h2><i class="bi bi-speedometer2 text-warning me-2"></i> Bảng điều khiển</h2>
+            <span class="text-muted">Chào mừng trở lại! Dưới đây là tình hình dữ liệu phấn hoa của bạn.</span>
         </div>
         <div th:if="${iotEnabled}">
             <form th:action="@{/iot/toggle}" method="post" class="d-inline">
                 <button type="submit" class="btn" th:classappend="${iotPaused} ? 'btn-success' : 'btn-outline-danger'">
                     <i class="bi" th:classappend="${iotPaused} ? 'bi-play-fill' : 'bi-pause-fill'"></i>
-                    <span th:text="${iotPaused} ? 'Resume IoT Simulator' : 'Pause IoT Simulator'"></span>
+                    <span th:text="${iotPaused} ? 'Tiếp tục mô phỏng IoT' : 'Tạm dừng mô phỏng IoT'"></span>
                 </button>
             </form>
         </div>
@@ -29,17 +29,17 @@
     <div class="row g-4 mb-4">
         <!-- Total Plants -->
         <div class="col-xl-3 col-md-6">
-            <div th:replace="~{fragments/components :: card-stat('Total Plants', ${dashboard.totalPlants}, 'bi-flower1', 'success', '/plants')}"></div>
+            <div th:replace="~{fragments/components :: card-stat('Tổng số Thực vật', ${dashboard.totalPlants}, 'bi-flower1', 'success', '/plants')}"></div>
         </div>
         
         <!-- Total Pollens -->
         <div class="col-xl-3 col-md-6">
-            <div th:replace="~{fragments/components :: card-stat('Total Pollens', ${dashboard.totalPollens}, 'bi-flower2', 'warning', '/pollens')}"></div>
+            <div th:replace="~{fragments/components :: card-stat('Tổng số Phấn hoa', ${dashboard.totalPollens}, 'bi-flower2', 'warning', '/pollens')}"></div>
         </div>
         
         <!-- Bee Colonies -->
         <div class="col-xl-3 col-md-6">
-            <div th:replace="~{fragments/components :: card-stat('Bee Colonies', ${dashboard.totalColonies}, 'bi-hexagon-fill', 'primary', '/colonies')}"></div>
+            <div th:replace="~{fragments/components :: card-stat('Số Bầy ong', ${dashboard.totalColonies}, 'bi-hexagon-fill', 'primary', '/colonies')}"></div>
         </div>
         
         <!-- Collections -->
@@ -48,7 +48,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1 text-muted">Collections</div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1 text-muted">Số lần Thu hoạch</div>
                             <div class="h3 mb-0 font-weight-bold text-dark" th:text="${dashboard.totalCollections}">0</div>
                         </div>
                         <div class="col-auto">
@@ -68,10 +68,10 @@
                 <i class="bi bi-bar-chart-fill fs-3"></i>
             </div>
             <div>
-                <h5 class="card-title fw-bold text-dark mb-1">Total Collected Pollen Weight</h5>
+                <h5 class="card-title fw-bold text-dark mb-1">Tổng Sản lượng Phấn hoa Thu hoạch</h5>
                 <h3 class="text-warning mb-0 fw-bold">
                     <span th:text="${#numbers.formatDecimal(dashboard.totalCollectedWeight, 1, 2)}">0.00</span> 
-                    <small class="fs-5 text-muted fw-normal">grams</small>
+                    <small class="fs-5 text-muted fw-normal">gram</small>
                 </h3>
             </div>
         </div>
@@ -121,15 +121,15 @@
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white py-3 d-flex align-items-center border-bottom">
                     <i class="bi bi-trophy-fill text-warning me-2 fs-5"></i>
-                    <h6 class="m-0 fw-bold text-dark">Top 5 Collected Pollens</h6>
+                    <h6 class="m-0 fw-bold text-dark">Top 5 Phấn hoa Thu hoạch Nhiều nhất</h6>
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-hover align-middle mb-0" th:if="${dashboard.topPollens != null and !dashboard.topPollens.isEmpty()}">
                         <thead class="table-light">
                         <tr>
-                            <th style="width:60px" class="ps-4">Rank</th>
-                            <th>Pollen Name</th>
-                            <th class="text-end pe-4">Total Weight (g)</th>
+                            <th style="width:60px" class="ps-4">Hạng</th>
+                            <th>Tên Phấn hoa</th>
+                            <th class="text-end pe-4">Tổng Sản lượng (g)</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -144,7 +144,7 @@
                     </table>
                     <div class="text-center py-5" th:if="${dashboard.topPollens == null or dashboard.topPollens.isEmpty()}">
                         <i class="bi bi-inbox display-4 text-muted mb-3 d-block" style="opacity: 0.3;"></i>
-                        <h6 class="text-muted">No collection data yet.</h6>
+                        <h6 class="text-muted">Chưa có dữ liệu thu hoạch.</h6>
                     </div>
                 </div>
             </div>
@@ -155,16 +155,16 @@
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white py-3 d-flex align-items-center border-bottom">
                     <i class="bi bi-clock-history text-primary me-2 fs-5"></i>
-                    <h6 class="m-0 fw-bold text-dark">Latest Collections</h6>
+                    <h6 class="m-0 fw-bold text-dark">Lần Thu hoạch Mới nhất</h6>
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-hover align-middle mb-0" th:if="${dashboard.latestCollections != null and !dashboard.latestCollections.isEmpty()}">
                         <thead class="table-light">
                         <tr>
-                            <th class="ps-4">Date</th>
-                            <th>Colony</th>
-                            <th>Pollen</th>
-                            <th class="text-end pe-4">Weight</th>
+                            <th class="ps-4">Ngày</th>
+                            <th>Bầy ong</th>
+                            <th>Phấn hoa</th>
+                            <th class="text-end pe-4">Sản lượng</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -178,11 +178,11 @@
                     </table>
                     <div class="text-center py-5" th:if="${dashboard.latestCollections == null or dashboard.latestCollections.isEmpty()}">
                         <i class="bi bi-journal-x display-4 text-muted mb-3 d-block" style="opacity: 0.3;"></i>
-                        <h6 class="text-muted">No collection records yet.</h6>
+                        <h6 class="text-muted">Chưa có bản ghi thu hoạch nào.</h6>
                     </div>
                 </div>
                 <div class="card-footer bg-white text-center py-3 border-top-0" th:if="${dashboard.latestCollections != null and !dashboard.latestCollections.isEmpty()}">
-                    <a th:href="@{/collections}" class="btn btn-sm btn-outline-primary">View All Collections</a>
+                    <a th:href="@{/collections}" class="btn btn-sm btn-outline-primary">Xem Tất cả Nhật ký Thu hoạch</a>
                 </div>
             </div>
         </div>
