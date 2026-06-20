@@ -16,11 +16,15 @@
             <p class="text-muted mb-0">Quản lý hồ sơ thu hoạch phấn hoa</p>
         </div>
         <div class="d-flex align-items-center">
+            <div sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')" class="form-check form-switch me-3 d-flex align-items-center mb-0">
+                <input class="form-check-input me-2" type="checkbox" id="iotToggleSwitch" style="cursor: pointer; width: 2.5em; height: 1.25em;">
+                <label class="form-check-label fw-semibold text-secondary" for="iotToggleSwitch" id="iotToggleLabel" style="min-width: 100px;">IoT: Đang tải...</label>
+            </div>
             <a th:href="@{/collections/report}" class="btn btn-outline-primary btn-sm me-2">
                 <i class="bi bi-bar-chart-line"></i> Báo cáo Tổng hợp
             </a>
             <a th:href="@{/collections/new}" class="btn btn-honey btn-sm"
-               sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')">
+               sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
                 <i class="bi bi-plus-lg me-1"></i> Thêm Bản ghi
             </a>
         </div>
@@ -92,11 +96,11 @@
                                 <i class="bi bi-eye"></i>
                             </a>
                             <a th:href="@{/collections/{id}/edit(id=${ct.id})}" class="btn btn-sm btn-outline-warning" title="Sửa"
-                               sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')">
+                               sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
                                 <i class="bi bi-pencil"></i>
                             </a>
                             <button type="button" class="btn btn-sm btn-outline-danger" title="Xoá"
-                                    sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')"
+                                    sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')"
                                     data-bs-toggle="modal" data-bs-target="#deleteModal"
                                     th:data-delete-url="@{/collections/{id}/delete(id=${ct.id})}"
                                     th:data-delete-name="'Collection record'">
@@ -119,7 +123,7 @@
         <i class="bi bi-clipboard display-1 text-muted mb-3 d-block" style="opacity: 0.2;"></i>
         <h4 class="text-muted mb-3">Không tìm thấy hồ sơ thu hoạch nào.</h4>
         <p class="text-muted mb-4">Bạn chưa thêm hồ sơ thu hoạch nào.</p>
-        <a th:href="@{/collections/new}" class="btn btn-honey" sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')">
+        <a th:href="@{/collections/new}" class="btn btn-honey" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
             <i class="bi bi-plus-lg me-1"></i> Thêm Bản ghi đầu tiên
         </a>
     </div>
@@ -129,6 +133,74 @@
 <th:block layout:fragment="script-extras">
     <!-- Delete Confirmation Modal -->
     <div th:replace="~{fragments/components :: confirm-delete}"></div>
+
+    <!-- IoT Simulator Control Script -->
+    <script sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleSwitch = document.getElementById('iotToggleSwitch');
+            const toggleLabel = document.getElementById('iotToggleLabel');
+            // Assuming CSRF token is in meta tags in main layout, though not strictly required if CSRF is disabled for API
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+            
+            if (!toggleSwitch) return;
+
+            // Load initial status
+            fetch('/iot-simulator/status')
+                .then(response => response.json())
+                .then(data => {
+                    updateToggleUI(data.paused);
+                })
+                .catch(error => {
+                    console.error('Error loading IoT status:', error);
+                    toggleLabel.textContent = 'IoT: Lỗi';
+                    toggleSwitch.disabled = true;
+                });
+
+            // Handle toggle action
+            toggleSwitch.addEventListener('change', function() {
+                const isChecked = this.checked;
+                toggleSwitch.disabled = true;
+                
+                const headers = { 'Content-Type': 'application/json' };
+                if (csrfToken && csrfHeader) {
+                    headers[csrfHeader] = csrfToken;
+                }
+
+                fetch('/iot-simulator/toggle', {
+                    method: 'POST',
+                    headers: headers
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error');
+                    return response.json();
+                })
+                .then(data => {
+                    updateToggleUI(data.paused);
+                    alert(data.paused ? 'Đã tạm dừng IoT Simulator' : 'Đã tiếp tục IoT Simulator');
+                })
+                .catch(error => {
+                    console.error('Error toggling IoT:', error);
+                    toggleSwitch.checked = !isChecked; // revert
+                    alert('Lỗi kết nối khi đổi trạng thái IoT');
+                })
+                .finally(() => {
+                    toggleSwitch.disabled = false;
+                });
+            });
+
+            function updateToggleUI(isPaused) {
+                toggleSwitch.checked = !isPaused;
+                if (isPaused) {
+                    toggleLabel.textContent = 'IoT: Tạm dừng';
+                    toggleLabel.className = 'form-check-label fw-semibold text-secondary';
+                } else {
+                    toggleLabel.textContent = 'IoT: Đang chạy';
+                    toggleLabel.className = 'form-check-label fw-semibold text-success';
+                }
+            }
+        });
+    </script>
 </th:block>
 
 </body>

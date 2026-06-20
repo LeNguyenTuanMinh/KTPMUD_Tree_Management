@@ -55,4 +55,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return a list of users with the specified role
      */
     List<User> findByRole(Role role);
+
+    /**
+     * Counts the number of users with a specific role and enabled status.
+     *
+     * @param role the role to count
+     * @param enabled the enabled status to count
+     * @return the number of matching users
+     */
+    long countByRoleAndEnabled(Role role, boolean enabled);
 }

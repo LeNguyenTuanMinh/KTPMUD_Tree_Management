@@ -103,10 +103,7 @@
                 <select class="form-select" th:classappend="${#fields.hasErrors('role')} ? 'is-invalid'"
                         id="role" th:field="*{role}">
                     <option value="STUDENT" selected>Học viên</option>
-                    <option value="RESEARCHER">Nghiên cứu viên</option>
-                    <option value="BEEKEEPER">Người nuôi ong</option>
                     <option value="FARMER">Nông dân</option>
-                    <option value="ADMIN">Quản trị viên</option>
                 </select>
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">
                     Vai trò bắt buộc nhập

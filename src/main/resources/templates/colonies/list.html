@@ -17,7 +17,7 @@
         </div>
         <div>
             <a th:href="@{/colonies/new}" class="btn btn-honey"
-               sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')">
+               sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
                 <i class="bi bi-plus-lg me-1"></i> Thêm Đàn ong
             </a>
         </div>
@@ -88,11 +88,11 @@
                                 <i class="bi bi-eye"></i>
                             </a>
                             <a th:href="@{/colonies/{id}/edit(id=${colony.id})}" class="btn btn-sm btn-outline-warning" title="Sửa"
-                               sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')">
+                               sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
                                 <i class="bi bi-pencil"></i>
                             </a>
                             <button type="button" class="btn btn-sm btn-outline-danger" title="Xoá"
-                                    sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')"
+                                    sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')"
                                     data-bs-toggle="modal" data-bs-target="#deleteModal"
                                     th:data-delete-url="@{/colonies/{id}/delete(id=${colony.id})}"
                                     th:data-delete-name="${colony.colonyCode}">
@@ -115,7 +115,7 @@
         <i class="bi bi-hexagon display-1 text-muted mb-3 d-block" style="opacity: 0.2;"></i>
         <h4 class="text-muted mb-3">Không tìm thấy đàn ong nào.</h4>
         <p class="text-muted mb-4">Bạn chưa thêm đàn ong nào.</p>
-        <a th:href="@{/colonies/new}" class="btn btn-honey" sec:authorize="hasAnyRole('ADMIN','BEEKEEPER')">
+        <a th:href="@{/colonies/new}" class="btn btn-honey" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
             <i class="bi bi-plus-lg me-1"></i> Thêm Đàn ong đầu tiên
         </a>
     </div>

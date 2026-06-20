@@ -85,6 +85,9 @@ public class WebAuthController {
         } catch (DuplicateResourceException ex) {
             model.addAttribute("errorMessage", ex.getMessage());
             return "register";
+        } catch (IllegalArgumentException ex) {
+            model.addAttribute("errorMessage", ex.getMessage());
+            return "register";
         }
     }
 }

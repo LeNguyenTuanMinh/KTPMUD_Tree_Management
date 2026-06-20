@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.List;
@@ -78,6 +79,7 @@ public class PlantWebController {
      * @param model the Spring MVC model
      * @return the plants/form view
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         log.debug("WEB: Showing create plant form");
@@ -97,6 +99,7 @@ public class PlantWebController {
      * @param model              the Spring MVC model
      * @return redirect to /plants on success, or plants/form on validation errors
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @PostMapping
     public String createPlant(
             @Valid @ModelAttribute("plant") PlantRequest request,
@@ -123,6 +126,7 @@ public class PlantWebController {
      * @param model the Spring MVC model
      * @return the plants/form view pre-populated with plant data
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
         log.debug("WEB: Showing edit form for plant id: {}", id);
@@ -167,6 +171,7 @@ public class PlantWebController {
      * @param model              the Spring MVC model
      * @return redirect to /plants on success, or plants/form on validation errors
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @PostMapping("/{id}/edit")
     public String updatePlant(
             @PathVariable Long id,
@@ -214,6 +219,7 @@ public class PlantWebController {
      * @param redirectAttributes for flash messages
      * @return redirect to /plants
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @GetMapping("/{id}/delete")
     public String deletePlant(
             @PathVariable Long id,

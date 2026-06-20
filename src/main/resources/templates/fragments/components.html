@@ -176,37 +176,43 @@
     </div>
     <div class="sidebar-menu p-3 overflow-auto" style="height: calc(100vh - 150px);">
         <ul class="nav flex-column gap-1">
-            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-2 px-3" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">Chính</li>
-            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
+            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-2 px-3" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER', 'STUDENT', 'FARMER')">Chính</li>
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER', 'STUDENT', 'FARMER')">
                 <a th:href="@{/dashboard}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'dashboard'} ? 'active bg-primary'">
                     <i class="bi bi-speedometer2 me-3 fs-5"></i> Bảng điều khiển
                 </a>
             </li>
             <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-4 px-3">Quản lý</li>
-            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER', 'STUDENT', 'FARMER')">
                 <a th:href="@{/plants}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'plants'} ? 'active bg-primary'">
                     <i class="bi bi-flower1 me-3 fs-5"></i> Thực vật
                 </a>
             </li>
-            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER', 'STUDENT', 'FARMER')">
                 <a th:href="@{/pollens}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'pollens'} ? 'active bg-primary'">
                     <i class="bi bi-flower2 me-3 fs-5"></i> Phấn hoa
                 </a>
             </li>
-            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER', 'STUDENT', 'FARMER')">
                 <a th:href="@{/colonies}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'colonies'} ? 'active bg-primary'">
                     <i class="bi bi-grid-3x3-gap-fill me-3 fs-5"></i> Bầy ong
                 </a>
             </li>
-            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER', 'STUDENT', 'FARMER')">
                 <a th:href="@{/collections}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'collections'} ? 'active bg-primary'">
                     <i class="bi bi-clipboard-data me-3 fs-5"></i> Nhật ký thu hoạch
                 </a>
             </li>
-            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-4 px-3" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">AI & Hỗ trợ</li>
-            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
+            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-4 px-3" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER', 'STUDENT', 'FARMER')">AI & Hỗ trợ</li>
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER', 'STUDENT', 'FARMER')">
                 <a th:href="@{/ai-assistant}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'ai-assistant'} ? 'active bg-primary'">
                     <i class="bi bi-robot me-3 fs-5 text-warning"></i> Trợ lý AI
+                </a>
+            </li>
+            <li class="nav-item text-uppercase text-muted small fw-bold mb-2 mt-4 px-3" sec:authorize="hasRole('ADMIN')">Hệ thống</li>
+            <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/users}" class="nav-link text-white rounded px-3 py-2 d-flex align-items-center" th:classappend="${activeMenu == 'users'} ? 'active bg-primary'">
+                    <i class="bi bi-people-fill me-3 fs-5"></i> Quản lý Người dùng
                 </a>
             </li>
         </ul>

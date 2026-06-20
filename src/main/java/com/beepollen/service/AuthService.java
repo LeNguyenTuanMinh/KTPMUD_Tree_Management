@@ -99,13 +99,20 @@ public class AuthService {
             throw new DuplicateResourceException("User", "email", request.getEmail());
         }
 
+        // Validate Role (Allowlist)
+        Role requestedRole = request.getRole() != null ? request.getRole() : Role.STUDENT;
+        if (requestedRole != Role.STUDENT && 
+            requestedRole != Role.FARMER) {
+            throw new IllegalArgumentException("Chỉ cho phép đăng ký tài khoản Học viên hoặc Nông dân.");
+        }
+
         // Create and persist the new user
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         user.setFullName(request.getFullName());
-        user.setRole(request.getRole() != null ? request.getRole() : Role.STUDENT);
+        user.setRole(requestedRole);
         user.setEnabled(true);
 
         user = userRepository.save(user);

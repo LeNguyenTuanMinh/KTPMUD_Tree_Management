@@ -22,10 +22,37 @@ public class UserService {
         User user = getUserByUsername(username);
 
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            throw new IllegalArgumentException("Current password does not match");
+            throw new IllegalArgumentException("Mật khẩu hiện tại không chính xác.");
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    public java.util.List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    }
+
+    public void updateUserRoleAndStatus(Long id, com.beepollen.entity.Role newRole, boolean enabled) {
+        User user = getUserById(id);
+
+        // Check if we are demoting or disabling the last active ADMIN
+        if (user.getRole() == com.beepollen.entity.Role.ADMIN && Boolean.TRUE.equals(user.getEnabled())) {
+            if (newRole != com.beepollen.entity.Role.ADMIN || !enabled) {
+                long activeAdmins = userRepository.countByRoleAndEnabled(com.beepollen.entity.Role.ADMIN, true);
+                if (activeAdmins <= 1) {
+                    throw new IllegalArgumentException("Không thể thực hiện vì đây là Admin cuối cùng đang hoạt động.");
+                }
+            }
+        }
+
+        user.setRole(newRole);
+        user.setEnabled(enabled);
         userRepository.save(user);
     }
 }

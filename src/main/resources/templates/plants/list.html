@@ -19,10 +19,10 @@
             <a th:href="@{/plants/export/csv}" class="btn btn-outline-success btn-sm me-2">
                 <i class="bi bi-file-earmark-spreadsheet"></i> Xuất CSV
             </a>
-            <button sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')" type="button" class="btn btn-outline-danger btn-sm me-2" data-bs-toggle="modal" data-bs-target="#importPdfModal">
+            <button sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')" type="button" class="btn btn-outline-danger btn-sm me-2" data-bs-toggle="modal" data-bs-target="#importPdfModal">
                 <i class="bi bi-file-earmark-pdf"></i> Nhập từ PDF
             </button>
-            <a sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')" th:href="@{/plants/new}" class="btn btn-honey btn-sm">
+            <a sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')" th:href="@{/plants/new}" class="btn btn-honey btn-sm">
                 <i class="bi bi-plus-lg"></i> Thêm Thực vật
             </a>
         </div>
@@ -91,12 +91,12 @@
                                class="btn btn-sm btn-outline-primary" title="Xem chi tiết">
                                 <i class="bi bi-eye"></i>
                             </a>
-                            <a sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')"
+                            <a sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')"
                                th:href="@{/plants/{id}/edit(id=${plant.id})}"
                                class="btn btn-sm btn-outline-warning" title="Sửa">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <span sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER')">
+                            <span sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')">
                                 <button type="button" class="btn btn-sm btn-outline-danger"
                                         data-bs-toggle="modal" data-bs-target="#deleteModal"
                                         th:data-delete-url="@{/plants/{id}/delete(id=${plant.id})}"
@@ -130,7 +130,7 @@
             <p class="text-muted mb-4" th:if="${keyword == null or keyword.isEmpty()}">
                 Chưa có thực vật nào trong hệ thống.
             </p>
-            <a sec:authorize="hasAnyRole('ADMIN', 'RESEARCHER')"
+            <a sec:authorize="hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')"
                th:href="@{/plants/new}" class="btn btn-honey">
                 <i class="bi bi-plus-lg me-1"></i> Thêm Thực vật đầu tiên của bạn
             </a>

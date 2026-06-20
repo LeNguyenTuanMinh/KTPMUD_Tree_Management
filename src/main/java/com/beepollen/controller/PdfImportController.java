@@ -27,7 +27,7 @@ import java.util.Base64;
 
 @Controller
 @RequestMapping("/import")
-@PreAuthorize("hasAnyRole('ADMIN','BEEKEEPER')")
+@PreAuthorize("hasAnyRole('ADMIN','BEEKEEPER','RESEARCHER')")
 @RequiredArgsConstructor
 @Slf4j
 public class PdfImportController {

@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,6 +61,7 @@ public class PollenWebController {
      * GET /pollens/new
      * Shows the form for creating a new pollen.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("pollen", new PollenRequest());
@@ -72,6 +74,7 @@ public class PollenWebController {
      * POST /pollens
      * Handles form submission for creating a new pollen.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @PostMapping
     public String createPollen(
             @Valid @ModelAttribute("pollen") PollenRequest request,
@@ -93,6 +96,7 @@ public class PollenWebController {
      * Shows the form for editing an existing pollen.
      * Pre-populates the PollenRequest from the existing entity.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
         PollenDTO pollenDTO = pollenService.getPollenById(id);
@@ -124,6 +128,7 @@ public class PollenWebController {
      * POST /pollens/{id}/edit
      * Handles form submission for updating an existing pollen.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @PostMapping("/{id}/edit")
     public String updatePollen(
             @PathVariable Long id,
@@ -163,6 +168,7 @@ public class PollenWebController {
      * GET /pollens/{id}/delete
      * Deletes a pollen and redirects to the list page.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @GetMapping("/{id}/delete")
     public String deletePollen(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         pollenService.deletePollen(id);

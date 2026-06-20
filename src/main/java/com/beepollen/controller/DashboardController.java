@@ -9,7 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.beepollen.iot.IotDeviceSimulator;
+import com.beepollen.iot.IotSimulatorState;
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.Optional;
 
 /**
@@ -21,7 +22,7 @@ import java.util.Optional;
 public class DashboardController {
 
     private final DashboardService dashboardService;
-    private final Optional<IotDeviceSimulator> iotSimulator;
+    private final IotSimulatorState iotSimulatorState;
 
     /**
      * Displays the dashboard page with aggregated statistics.
@@ -35,22 +36,10 @@ public class DashboardController {
         model.addAttribute("dashboard", dashboardData);
         model.addAttribute("activeMenu", "dashboard");
         
-        boolean iotEnabled = iotSimulator.isPresent();
-        boolean iotPaused = iotSimulator.map(IotDeviceSimulator::isPaused).orElse(false);
-        model.addAttribute("iotEnabled", iotEnabled);
-        model.addAttribute("iotPaused", iotPaused);
-        
         return "dashboard";
     }
 
-    /**
-     * Toggles the IoT Simulator pause state.
-     */
-    @PostMapping("/iot/toggle")
-    public String toggleIotSimulator() {
-        iotSimulator.ifPresent(IotDeviceSimulator::togglePause);
-        return "redirect:/dashboard";
-    }
+
 
     /**
      * Redirects the root URL to the dashboard.

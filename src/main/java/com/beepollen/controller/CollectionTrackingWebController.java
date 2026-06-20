@@ -23,6 +23,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -63,6 +64,7 @@ public class CollectionTrackingWebController {
     /**
      * Shows the form for creating a new tracking record.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("tracking", new CollectionTrackingRequest());
@@ -74,6 +76,7 @@ public class CollectionTrackingWebController {
     /**
      * Processes the creation form submission.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @PostMapping
     public String createCollection(
             @Valid @ModelAttribute("tracking") CollectionTrackingRequest request,
@@ -95,6 +98,7 @@ public class CollectionTrackingWebController {
     /**
      * Shows the form for editing an existing tracking record.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
         CollectionTrackingDTO tracking = collectionTrackingService.getTrackingById(id);
@@ -116,6 +120,7 @@ public class CollectionTrackingWebController {
     /**
      * Processes the edit form submission.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @PostMapping("/{id}/edit")
     public String updateCollection(
             @PathVariable Long id,
@@ -150,6 +155,7 @@ public class CollectionTrackingWebController {
     /**
      * Deletes a tracking record and redirects to the list.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @GetMapping("/{id}/delete")
     public String deleteCollection(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         collectionTrackingService.deleteTracking(id);

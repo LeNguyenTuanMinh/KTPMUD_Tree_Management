@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * Thymeleaf MVC controller for Bee Colony management pages.
@@ -50,6 +51,7 @@ public class BeeColonyWebController {
     /**
      * Show form to create a new colony.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("colony", new BeeColonyRequest());
@@ -61,6 +63,7 @@ public class BeeColonyWebController {
     /**
      * Process colony creation form.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @PostMapping
     public String createColony(@Valid @ModelAttribute("colony") BeeColonyRequest request,
                                BindingResult result,
@@ -86,6 +89,7 @@ public class BeeColonyWebController {
     /**
      * Show form to edit an existing colony.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
         BeeColonyDTO colony = beeColonyService.getColonyById(id);
@@ -108,6 +112,7 @@ public class BeeColonyWebController {
     /**
      * Process colony update form.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @PostMapping("/{id}/edit")
     public String updateColony(@PathVariable Long id,
                                @Valid @ModelAttribute("colony") BeeColonyRequest request,
@@ -146,6 +151,7 @@ public class BeeColonyWebController {
     /**
      * Delete a colony.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'BEEKEEPER', 'RESEARCHER')")
     @GetMapping("/{id}/delete")
     public String deleteColony(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         beeColonyService.deleteColony(id);

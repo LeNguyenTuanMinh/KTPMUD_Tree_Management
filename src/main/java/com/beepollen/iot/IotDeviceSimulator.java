@@ -33,6 +33,7 @@ public class IotDeviceSimulator {
     private final PlantRepository plantRepository;
     private final RestTemplate restTemplate = new RestTemplate();
     private final Random random = new Random();
+    private final IotSimulatorState iotSimulatorState;
 
     @Value("${server.port:8080}")
     private String serverPort;
@@ -49,23 +50,14 @@ public class IotDeviceSimulator {
     @Value("${iot.api.key}")
     private String apiKey;
 
-    private boolean isPaused = false;
 
-    public void togglePause() {
-        this.isPaused = !this.isPaused;
-        log.info("IoT Simulator paused state changed to: {}", this.isPaused);
-    }
-
-    public boolean isPaused() {
-        return this.isPaused;
-    }
 
     @Transactional
     @Scheduled(initialDelayString = "${iot.simulator.initial-delay-ms}", fixedDelayString = "${iot.simulator.interval-ms}")
     public void simulateTick() {
         log.info("--- IoT Simulator Tick Started ---");
 
-        if (isPaused) {
+        if (iotSimulatorState.isPaused()) {
             log.info("IoT Simulator is currently paused. Skipping tick.");
             return;
         }

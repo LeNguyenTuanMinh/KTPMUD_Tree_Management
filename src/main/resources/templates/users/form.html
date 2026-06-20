@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Chỉnh sửa Người dùng - Bee Pollen Management</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div th:replace="~{fragments/components :: breadcrumb('Người dùng', 'Chỉnh sửa quyền')}"></div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-bottom-0 d-flex align-items-center">
+                    <h5 class="mb-0 text-primary fw-bold">
+                        <i class="bi bi-person-gear me-2"></i> Chỉnh sửa Tài khoản: <span th:text="${targetUser.username}"></span>
+                    </h5>
+                </div>
+                <div class="card-body px-4 pb-4 pt-2">
+                    
+                    <!-- Warning if editing self -->
+                    <div th:if="${isSelf}" class="alert alert-warning border-warning border-opacity-50 shadow-sm d-flex align-items-center">
+                        <i class="bi bi-exclamation-triangle-fill fs-4 text-warning me-3"></i>
+                        <div>
+                            <strong>Chú ý!</strong> Bạn đang chỉnh sửa chính tài khoản của mình. Việc hạ quyền hoặc khoá tài khoản này có thể khiến bạn mất quyền truy cập Admin hoặc bị đăng xuất ngay lập tức. Hãy thật cẩn thận!
+                        </div>
+                    </div>
+
+                    <form th:action="@{/users/{id}/edit(id=${targetUser.id})}" method="post">
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-muted small fw-bold text-uppercase">Họ và tên</label>
+                                <input type="text" class="form-control bg-light" th:value="${targetUser.fullName}" readonly disabled>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-muted small fw-bold text-uppercase">Email</label>
+                                <input type="email" class="form-control bg-light" th:value="${targetUser.email}" readonly disabled>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="role" class="form-label text-muted small fw-bold text-uppercase">Vai trò <span class="text-danger">*</span></label>
+                            <select class="form-select" id="role" name="role" required>
+                                <option th:each="r : ${roles}" 
+                                        th:value="${r.name()}" 
+                                        th:text="${r.displayName}"
+                                        th:selected="${targetUser.role == r}">
+                                </option>
+                            </select>
+                            <div class="form-text">Quản trị viên có toàn quyền. Nghiên cứu viên chỉ được xem thực vật/phấn hoa. Người nuôi ong được thao tác bầy ong & thu hoạch.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-muted small fw-bold text-uppercase d-block">Trạng thái Tài khoản</label>
+                            <div class="form-check form-switch fs-5">
+                                <input class="form-check-input" type="checkbox" role="switch" id="enabled" name="enabled" value="true" th:checked="${targetUser.enabled}">
+                                <label class="form-check-label ms-2" for="enabled">Hoạt động</label>
+                            </div>
+                            <div class="form-text mt-2">Nếu tắt (Khoá), người dùng sẽ không thể đăng nhập vào hệ thống.</div>
+                        </div>
+
+                        <hr class="my-4 text-muted">
+
+                        <div class="d-flex justify-content-between">
+                            <a th:href="@{/users}" class="btn btn-light border shadow-sm">
+                                <i class="bi bi-x-circle me-1"></i> Huỷ bỏ
+                            </a>
+                            <button th:if="${isSelf}" type="submit" class="btn btn-primary shadow-sm" onclick="return confirm('Bạn có chắc chắn muốn cập nhật quyền/trạng thái của CHÍNH MÌNH không?');">
+                                <i class="bi bi-save me-1"></i> Lưu thay đổi
+                            </button>
+                            <button th:unless="${isSelf}" type="submit" class="btn btn-primary shadow-sm">
+                                <i class="bi bi-save me-1"></i> Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

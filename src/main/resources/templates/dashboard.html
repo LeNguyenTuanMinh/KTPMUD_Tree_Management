@@ -15,14 +15,7 @@
             <h2><i class="bi bi-speedometer2 text-warning me-2"></i> Bảng điều khiển</h2>
             <span class="text-muted">Chào mừng trở lại! Dưới đây là tình hình dữ liệu phấn hoa của bạn.</span>
         </div>
-        <div th:if="${iotEnabled}">
-            <form th:action="@{/iot/toggle}" method="post" class="d-inline">
-                <button type="submit" class="btn" th:classappend="${iotPaused} ? 'btn-success' : 'btn-outline-danger'">
-                    <i class="bi" th:classappend="${iotPaused} ? 'bi-play-fill' : 'bi-pause-fill'"></i>
-                    <span th:text="${iotPaused} ? 'Tiếp tục mô phỏng IoT' : 'Tạm dừng mô phỏng IoT'"></span>
-                </button>
-            </form>
-        </div>
+
     </div>
 
     <!-- Stat Cards Row -->
@@ -73,6 +66,26 @@
                     <span th:text="${#numbers.formatDecimal(dashboard.totalCollectedWeight, 1, 2)}">0.00</span> 
                     <small class="fs-5 text-muted fw-normal">gram</small>
                 </h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Download Action Card for STUDENT and FARMER -->
+    <div sec:authorize="hasAnyRole('STUDENT', 'FARMER')" class="card shadow-sm border-0 bg-success bg-opacity-10 mb-4">
+        <div class="card-body d-flex align-items-center justify-content-between p-4">
+            <div class="d-flex align-items-center">
+                <div class="bg-success text-white rounded-circle p-3 me-4 d-flex align-items-center justify-content-center shadow-sm" style="width: 60px; height: 60px;">
+                    <i class="bi bi-file-earmark-excel-fill fs-3"></i>
+                </div>
+                <div>
+                    <h5 class="card-title fw-bold text-dark mb-1">Tải xuống Báo cáo</h5>
+                    <p class="text-muted mb-0">Xuất dữ liệu nhật ký thu hoạch ra tệp CSV.</p>
+                </div>
+            </div>
+            <div>
+                <a th:href="@{/collections/report/export/csv}" class="btn btn-success fw-bold px-4">
+                    <i class="bi bi-download me-2"></i> Tải CSV
+                </a>
             </div>
         </div>
     </div>

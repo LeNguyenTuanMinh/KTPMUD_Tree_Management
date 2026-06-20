@@ -77,25 +77,25 @@ public class SecurityConfig {
                                 "/error"
                         ).permitAll()
 
-                        // Admin-only API endpoints
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        // Admin-only API and Web endpoints
+                        .requestMatchers("/api/admin/**", "/users/**").hasRole("ADMIN")
 
                         // Research-related API endpoints
                         .requestMatchers("/api/plants/**", "/api/pollens/**")
-                        .hasAnyRole("ADMIN", "RESEARCHER")
+                        .hasAnyRole("ADMIN", "BEEKEEPER", "RESEARCHER", "STUDENT", "FARMER")
 
                         // Beekeeping-related API endpoints
                         .requestMatchers("/api/colonies/**", "/api/tracking/**")
-                        .hasAnyRole("ADMIN", "BEEKEEPER")
-
-                        // Web UI Research Endpoints (Read-only for Researcher)
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/plants", "/plants/{id}", "/pollens", "/pollens/{id}").hasAnyRole("ADMIN", "RESEARCHER", "BEEKEEPER")
+                        .hasAnyRole("ADMIN", "BEEKEEPER", "RESEARCHER", "STUDENT", "FARMER")
                         
-                        // Web UI Write Endpoints (Blocked for Researcher)
-                        .requestMatchers("/plants/**", "/pollens/**").hasAnyRole("ADMIN", "BEEKEEPER")
+                        // Report Export endpoint for all roles (ADMIN, BEEKEEPER, RESEARCHER, STUDENT, FARMER)
+                        .requestMatchers("/collections/report/export/csv").hasAnyRole("ADMIN", "BEEKEEPER", "RESEARCHER", "STUDENT", "FARMER")
+
+                        // Web UI Write Endpoints (Domain operations)
+                        .requestMatchers("/plants/**", "/pollens/**").hasAnyRole("ADMIN", "BEEKEEPER", "RESEARCHER", "STUDENT", "FARMER")
                         
                         // Web UI other endpoints (colonies, tracking)
-                        .requestMatchers("/colonies/**", "/collections/**").hasAnyRole("ADMIN", "BEEKEEPER")
+                        .requestMatchers("/colonies/**", "/collections/**").hasAnyRole("ADMIN", "BEEKEEPER", "RESEARCHER", "STUDENT", "FARMER")
 
                         // All other requests require authentication
                         .anyRequest().authenticated()
